@@ -42,7 +42,7 @@ export const HACKATHON_CONFIG = {
 
   // Payment Details
   upi: {
-    upiId: "hackfest2026@oksbi",
+    upiId: "8303214496@pthdfc",
     payeeName: "Campus HackFest Organizing Committee",
     amount: 50,
     qrImage: "/upi-qr.jpeg",
