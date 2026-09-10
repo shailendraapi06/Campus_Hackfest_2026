@@ -45,7 +45,7 @@ export const HACKATHON_CONFIG = {
     upiId: "hackfest2026@oksbi",
     payeeName: "Campus HackFest Organizing Committee",
     amount: 50,
-    qrImage: "/upi-qr.svg",
+    qrImage: "/upi-qr.jpeg",
     instructions: "Scan the QR code with any UPI app (GPay, PhonePe, Paytm) to pay the ₹50 entry fee. Upload your payment screenshot below."
   },
 
