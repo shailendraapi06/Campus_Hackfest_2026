@@ -120,7 +120,7 @@ export default function About() {
               </div>
               <div className="flex justify-between py-2 border-b border-white/5">
                 <span className="text-slate-400">Day 1 (Techfest)</span>
-                <span className="font-semibold text-white">27 Oct 2026 (09:30 AM)</span>
+                <span className="font-semibold text-white">27 Oct 2026 (10:00 AM – 5:00 PM)</span>
               </div>
               <div className="flex justify-between py-2 border-b border-white/5">
                 <span className="text-slate-400">Day 2 (Rays of Raunak)</span>

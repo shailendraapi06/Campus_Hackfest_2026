@@ -104,7 +104,7 @@ export default function Home() {
               </p>
 
               <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between text-xs text-slate-400">
-                <span>09:30 AM – 05:30 PM</span>
+                <span>10:00 AM – 05:00 PM</span>
                 <span className="text-cyan-400 font-semibold flex items-center gap-1">
                   IT Labs <ChevronRight className="w-3 h-3" />
                 </span>
@@ -248,7 +248,7 @@ export default function Home() {
             </div>
 
             <div className="mt-8 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <span className="text-xs text-slate-400 font-mono">09:30 AM – 05:30 PM • IT Labs</span>
+              <span className="text-xs text-slate-400 font-mono">10:00 AM – 05:00 PM • IT Labs</span>
               <Link
                 to="/register"
                 className="w-full sm:w-auto px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider bg-cyan-400 text-dark-950 hover:bg-cyan-300 transition-colors shadow-glow-cyan text-center"

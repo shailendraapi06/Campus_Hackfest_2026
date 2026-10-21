@@ -25,8 +25,8 @@ export const HACKATHON_CONFIG = {
     tagline: "Build. Innovate. Solve Real Problems.",
     theme: "SOLVE A REAL PROBLEM",
     description: "A high-intensity college hackathon where 1st and 2nd-year innovators identify authentic real-world challenges, engineer working software prototypes, and pitch live to senior judges.",
-    time: "09:30 AM – 05:30 PM",
-    durationText: "Full-Day Sprint (7+ Hours)",
+    time: "10:00 AM – 05:00 PM",
+    durationText: "Sprint: 10:00 AM – 05:00 PM (7 Hours)",
     venue: "Government Polytechnic Kanpur — IT Department Labs",
     accentColor: "cyan"
   },
@@ -177,18 +177,18 @@ export const HACKATHON_CONFIG = {
     }
   ],
 
-  // Schedule Timeline: Day 1 (Techfest Hackathon — 27 October 2026)
+  // Schedule Timeline: Day 1 (Techfest Hackathon — 27 October 2026, 10:00 AM – 05:00 PM)
   day1Schedule: [
-    { time: "09:30 AM – 10:00 AM", title: "Registration & Desk Check-in", desc: "Desk reporting, verification of student IDs, lab seat allotment, and Wi-Fi credential provisioning." },
-    { time: "10:00 AM – 10:15 AM", title: "Opening Ceremony", desc: "Welcome address by 3rd-year organizers and faculty coordinators." },
-    { time: "10:15 AM – 10:30 AM", title: "Rules & Hackathon Briefing", desc: "Walkthrough of challenge guidelines, judging rubric, submission checklist, and introduction to mentors." },
-    { time: "10:30 AM", title: "Hackathon Begins! 🚀", desc: "Hacking sprint officially kicks off. Code repositories initialized." },
-    { time: "10:30 AM – 01:00 PM", title: "Sprint Phase 1: Architecture & Core Build", desc: "Teams wireframe, scaffold applications, setup repositories, and build primary workflows with mentor guidance." },
-    { time: "01:00 PM – 01:30 PM", title: "Lunch & Networking Break 🍕", desc: "Re-energize, take a break, and discuss ideas with senior mentors." },
-    { time: "01:30 PM – 03:30 PM", title: "Sprint Phase 2: Feature Polish & Integration", desc: "Mentors conduct checkpoint rounds. Final feature integration and UI polishing." },
-    { time: "03:30 PM – 04:00 PM", title: "Testing & Code Submission", desc: "Final testing, pushing commits to GitHub, and submission of repository links." },
+    { time: "10:00 AM – 10:30 AM", title: "Registration & Desk Check-in", desc: "Desk reporting, verification of student IDs, lab seat allotment, and Wi-Fi credential provisioning." },
+    { time: "10:30 AM – 10:45 AM", title: "Opening Ceremony", desc: "Welcome address by 3rd-year organizers and faculty coordinators." },
+    { time: "10:45 AM – 11:00 AM", title: "Rules & Hackathon Briefing", desc: "Walkthrough of challenge guidelines, judging rubric, submission checklist, and introduction to mentors." },
+    { time: "11:00 AM", title: "Hackathon Begins! 🚀", desc: "Hacking sprint officially kicks off. Code repositories initialized." },
+    { time: "11:00 AM – 01:15 PM", title: "Sprint Phase 1: Architecture & Core Build", desc: "Teams wireframe, scaffold applications, setup repositories, and build primary workflows with mentor guidance." },
+    { time: "01:15 PM – 01:45 PM", title: "Lunch & Networking Break 🍕", desc: "Re-energize, take a break, and discuss ideas with senior mentors." },
+    { time: "01:45 PM – 03:45 PM", title: "Sprint Phase 2: Feature Polish & Integration", desc: "Mentors conduct checkpoint rounds. Final feature integration and UI polishing." },
+    { time: "03:45 PM – 04:00 PM", title: "Testing & Code Submission", desc: "Final testing, pushing commits to GitHub, and submission of repository links." },
     { time: "04:00 PM Sharp", title: "Submission Closes 🛑", desc: "Late submissions locked out. Evaluation queues initialized." },
-    { time: "04:00 PM – 05:30 PM", title: "Presentations & Live Judging", desc: "Each team presents a live demo + Q&A in front of the judging panel. (Winners to be crowned on Day 2 stage!)" }
+    { time: "04:00 PM – 05:00 PM", title: "Presentations & Live Judging", desc: "Each team presents a live demo + Q&A in front of the judging panel. (Winners to be crowned on Day 2 stage!)" }
   ],
 
   // Schedule Timeline: Day 2 (Rays of Raunak Cultural Fest — 28 October 2026, 11 AM - 5 PM)

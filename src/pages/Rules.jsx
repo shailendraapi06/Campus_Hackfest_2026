@@ -40,7 +40,7 @@ export default function Rules() {
           <h4 className="text-xl font-bold text-white font-display">Techfest 2026</h4>
           <p className="text-sm font-semibold text-cyan-300 mt-1">27 October 2026</p>
           <p className="text-xs text-slate-400 mt-2 leading-relaxed">
-            Full-day intensive hackathon sprint from 09:30 AM to 05:30 PM in the IT Department Labs.
+            Full-day intensive hackathon sprint from 10:00 AM to 05:00 PM in the IT Department Labs.
           </p>
         </div>
 
