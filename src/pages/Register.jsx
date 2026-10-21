@@ -13,6 +13,7 @@ import {
   ArrowRight,
   ShieldCheck,
   UserCheck,
+  UserPlus,
   Calendar,
   Wallet,
   Check,
@@ -138,6 +139,23 @@ export default function Register() {
         feePaid: 'Paid',
         paymentMethod: 'Online'
       });
+    } else if (type === 'need_team') {
+      setFormData({
+        fullName: 'Vikram Joshi',
+        year: '1st Year',
+        email: `vikram.needteam${randomId}@gpkanpur.edu`,
+        phone: randomPhone,
+        skills: ['Python', 'AI/ML', 'JavaScript'],
+        otherSkill: 'Flask, Git',
+        participationType: 'need_team',
+        teamName: '',
+        teamLeader: '',
+        teamMembers: ['', '', '', ''],
+        problemIdea: 'Automated campus attendance and student skill matchmaking system',
+        shortIdea: 'A web app connecting students with complementary skillsets for hackathons',
+        feePaid: 'Paid',
+        paymentMethod: 'Online'
+      });
     } else {
       setFormData({
         fullName: 'Ishita Patel',
@@ -147,7 +165,7 @@ export default function Register() {
         skills: ['HTML/CSS', 'JavaScript', 'Python'],
         otherSkill: 'Figma',
         participationType: 'individual',
-        teamName: '',
+        teamName: `Solo Vanguard ${randomId}`,
         teamLeader: '',
         teamMembers: ['', '', '', ''],
         problemIdea: 'Smart lost and found desk platform for campus labs and library',
@@ -217,6 +235,11 @@ export default function Register() {
       } else if (totalTeamSize > 5) {
         newErrors.teamMembers = `Teams cannot exceed 5 eligible student members. Current: ${totalTeamSize} members.`;
         if (!firstInvalidId) firstInvalidId = 'input-teamMembers';
+      }
+    } else if (formData.participationType === 'individual') {
+      if (!formData.teamName.trim()) {
+        newErrors.teamName = 'Team name is required. (Enter your solo team name or project handle)';
+        if (!firstInvalidId) firstInvalidId = 'input-soloTeamName';
       }
     }
 
@@ -362,6 +385,14 @@ export default function Register() {
                 <strong>Day 2 — 28 October 2026:</strong> Join Rays of Raunak Cultural Fest at 11:00 AM in the auditorium. Hackathon results & awards will be presented on stage!
               </span>
             </div>
+            {submissionResult.participationType === 'Looking for Team' && (
+              <div className="flex items-start gap-2.5 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-200">
+                <Users className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                <span>
+                  <strong>Team Matchmaking at Desk:</strong> On 27 Oct morning (10:00 AM), inform the registration desk that you are in "Need a Team" mode. Mentors will connect you with fellow innovators!
+                </span>
+              </div>
+            )}
             {submissionResult.paymentStatus !== 'Paid' && (
               <div className="flex items-start gap-2.5 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-200">
                 <Wallet className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
@@ -402,28 +433,36 @@ export default function Register() {
           )}
 
           {/* Quick Info Callout */}
-          <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-300">
+          <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 flex flex-col lg:flex-row lg:items-center justify-between gap-3 text-xs text-slate-300">
             <div className="flex items-center gap-2">
               <Info className="w-4 h-4 text-cyan-400 shrink-0" />
               <span>
-                Participate as a <strong>Solo individual</strong> or as a <strong>Team of 3 to 5 members</strong>. Fee: <strong>₹200 per participant</strong>.
+                Participate as <strong>Solo</strong>, with a <strong>Team of 3–5</strong>, or in <strong>Need a Team</strong> matchmaking mode. Fee: <strong>₹200 per participant</strong>.
               </span>
             </div>
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex flex-wrap items-center gap-2 shrink-0">
               <button
                 type="button"
                 onClick={() => fillDemoData('individual')}
                 className="text-[11px] font-mono text-cyan-400 hover:text-cyan-300 underline"
               >
-                Auto-fill Solo Test
+                Auto Solo
               </button>
               <span className="text-slate-600">•</span>
               <button
                 type="button"
                 onClick={() => fillDemoData('team')}
+                className="text-[11px] font-mono text-purple-400 hover:text-purple-300 underline"
+              >
+                Auto Team
+              </button>
+              <span className="text-slate-600">•</span>
+              <button
+                type="button"
+                onClick={() => fillDemoData('need_team')}
                 className="text-[11px] font-mono text-amber-400 hover:text-amber-300 underline"
               >
-                Auto-fill Team Test
+                Auto No Team Yet
               </button>
             </div>
           </div>
@@ -607,7 +646,7 @@ export default function Register() {
                 Select Participation Type <span className="text-rose-400">*</span>
               </label>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Option 1: Individual / Solo */}
                 <label
                   className={`flex items-start gap-3.5 p-4 rounded-2xl border cursor-pointer transition-all ${
@@ -627,10 +666,10 @@ export default function Register() {
                   <div>
                     <div className="flex items-center gap-2">
                       <UserCheck className="w-4 h-4 text-cyan-400" />
-                      <span className="text-sm font-bold text-white">Individual / Solo Participation</span>
+                      <span className="text-sm font-bold text-white">Solo / Individual</span>
                     </div>
                     <span className="text-xs text-slate-400 mt-1 block leading-relaxed">
-                      Compete as an individual developer. No fake teammate details required; build your own project or let mentors connect you.
+                      Compete as an individual developer. Build your own project with senior mentor guidance.
                     </span>
                   </div>
                 </label>
@@ -654,22 +693,108 @@ export default function Register() {
                   <div>
                     <div className="flex items-center gap-2">
                       <Users className="w-4 h-4 text-purple-400" />
-                      <span className="text-sm font-bold text-white">Team Participation (3–5 Members)</span>
+                      <span className="text-sm font-bold text-white">Ready Team (3–5)</span>
                     </div>
                     <span className="text-xs text-slate-400 mt-1 block leading-relaxed">
-                      Register with a squad of 3 to 5 eligible student participants (1 Leader + 2 to 4 teammates).
+                      Already have a team? Register with your formed squad of 3 to 5 eligible student participants.
+                    </span>
+                  </div>
+                </label>
+
+                {/* Option 3: Need a Team / Team Not Formed Yet */}
+                <label
+                  className={`flex items-start gap-3.5 p-4 rounded-2xl border cursor-pointer transition-all ${
+                    formData.participationType === 'need_team'
+                      ? 'bg-amber-500/10 border-amber-400/60 shadow-glow-amber/20 text-white'
+                      : 'bg-[#070a12]/60 border-white/10 text-slate-400 hover:border-white/20'
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="participationType"
+                    value="need_team"
+                    checked={formData.participationType === 'need_team'}
+                    onChange={handleChange}
+                    className="accent-amber-400 mt-1"
+                  />
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <UserPlus className="w-4 h-4 text-amber-400" />
+                      <span className="text-sm font-bold text-white">Need a Team (No Team Yet)</span>
+                    </div>
+                    <span className="text-xs text-slate-400 mt-1 block leading-relaxed">
+                      Team not formed yet? Register your profile; mentors & organizers will match you into a team on Day 1!
                     </span>
                   </div>
                 </label>
               </div>
             </div>
 
-            {/* If Individual: Friendly Note */}
+            {/* If Individual: Friendly Note + Solo Team Name Input */}
             {formData.participationType === 'individual' && (
-              <div className="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-400/20 text-xs text-slate-300 flex items-start gap-3 animate-fadeIn">
-                <Sparkles className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
+              <div className="space-y-4 pt-2 animate-fadeIn">
+                <div className="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-400/20 text-xs text-slate-300 flex items-start gap-3">
+                  <Sparkles className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
+                  <div>
+                    <strong className="text-white block text-sm mb-1">
+                      Solo / Individual Registration:
+                    </strong>
+                    You are competing independently. Even as a solo participant, please specify your Team Name / Project Handle below for desk reporting, certificates, and the leaderboard!
+                  </div>
+                </div>
+
                 <div>
-                  <strong className="text-white">Individual Registration Activated:</strong> You do not need to invent fake team members. You will be registered under your own name with dedicated senior mentor support on hackathon day.
+                  <label htmlFor="input-soloTeamName" className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+                    Team Name / Project Handle <span className="text-rose-400">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="input-soloTeamName"
+                    name="teamName"
+                    value={formData.teamName}
+                    onChange={handleChange}
+                    placeholder="e.g. SoloInnovator, ByteWarrior, or your chosen team name"
+                    className={`w-full px-4 py-3 rounded-xl bg-[#070a12] border text-white placeholder-slate-500 focus:outline-none transition-colors text-sm ${
+                      errors.teamName ? 'border-rose-500' : 'border-white/10 focus:border-cyan-400'
+                    }`}
+                  />
+                  {errors.teamName && <p className="text-xs text-rose-400 mt-1">{errors.teamName}</p>}
+                  <p className="text-[11px] text-slate-400 mt-1">
+                    This name will appear on your desk identity badge and project submission evaluation sheet.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* If Need a Team: Friendly Matchmaking Callout + Optional Preferred Team Name */}
+            {formData.participationType === 'need_team' && (
+              <div className="space-y-4 pt-2 animate-fadeIn">
+                <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-400/30 text-xs text-slate-300 flex items-start gap-3">
+                  <Sparkles className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                  <div>
+                    <strong className="text-white block text-sm mb-1">
+                      Team Matchmaking Mode Activated (टीम अभी नहीं बनी है):
+                    </strong>
+                    Don't worry if you don't have a team yet! You can complete your registration right now. During desk check-in on 27 October (10:00 AM), student coordinators and senior mentors will connect you with other individual participants to form a balanced 3 to 5 member team.
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="input-proposedTeamName" className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+                    Preferred Team Name (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    id="input-proposedTeamName"
+                    name="teamName"
+                    value={formData.teamName}
+                    onChange={handleChange}
+                    placeholder="e.g. CodeForge (leave blank if undecided)"
+                    className="w-full px-4 py-3 rounded-xl bg-[#070a12] border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 transition-colors text-sm"
+                  />
+                  <p className="text-[11px] text-slate-400 mt-1">
+                    If you have a preferred team name in mind, enter it; otherwise mentors will help your squad finalize one on Day 1.
+                  </p>
                 </div>
               </div>
             )}

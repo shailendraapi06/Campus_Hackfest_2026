@@ -13,6 +13,7 @@ export async function submitRegistration(formData) {
   const endpoint = (HACKATHON_CONFIG.googleAppsScriptUrl || "").trim();
 
   const isTeam = formData.participationType === 'team' || formData.teamStatus === 'yes';
+  const isNeedTeam = formData.participationType === 'need_team' || formData.participationType === 'looking_for_team';
 
   // Format a clean payment reference token for record-keeping
   const feePaidStatus = formData.feePaid === 'Paid' ? 'Paid' : 'Not Paid';
@@ -20,6 +21,34 @@ export async function submitRegistration(formData) {
   const txnRef = formData.feePaid === 'Paid' 
     ? `PAID-${paymentMethod.toUpperCase()}-${Date.now().toString().slice(-6)}`
     : `UNPAID-${Date.now().toString().slice(-6)}`;
+
+  // Determine participation label, teamFormed status, and team defaults
+  let participationTypeLabel = "Individual / Solo";
+  let teamFormedVal = "No";
+  let teamNameVal = formData.teamName?.trim() || `${formData.fullName?.trim()} (Solo)`;
+  let teamLeaderVal = formData.fullName?.trim() || "";
+  let teamMembersVal = [];
+
+  if (isTeam) {
+    participationTypeLabel = "Team";
+    teamFormedVal = "Yes";
+    teamNameVal = formData.teamName?.trim() || "Team";
+    teamLeaderVal = formData.teamLeader?.trim() || formData.fullName?.trim() || "";
+    teamMembersVal = formData.teamMembers?.filter(Boolean) || [];
+  } else if (isNeedTeam) {
+    participationTypeLabel = "Looking for Team";
+    teamFormedVal = "No";
+    teamNameVal = formData.teamName?.trim() || "Pending Team Formation";
+    teamLeaderVal = formData.fullName?.trim() || "";
+    teamMembersVal = ["Looking for Teammates / Desk Matchmaking"];
+  } else {
+    // Individual / Solo
+    participationTypeLabel = "Individual / Solo";
+    teamFormedVal = "No";
+    teamNameVal = formData.teamName?.trim() || `${formData.fullName?.trim()} (Solo)`;
+    teamLeaderVal = formData.fullName?.trim() || "";
+    teamMembersVal = [];
+  }
 
   // Prepare normalized payload for Google Apps Script
   const payload = {
@@ -29,11 +58,12 @@ export async function submitRegistration(formData) {
     phone: formData.phone?.trim() || "",
     skills: formData.skills || [],
     otherSkill: formData.otherSkill?.trim() || "",
-    participationType: isTeam ? "Team" : "Individual / Solo",
-    teamStatus: isTeam ? "yes" : "no",
-    teamName: isTeam ? (formData.teamName?.trim() || "") : "Solo Participant",
-    teamLeader: isTeam ? (formData.teamLeader?.trim() || formData.fullName?.trim() || "") : formData.fullName?.trim() || "",
-    teamMembers: isTeam ? (formData.teamMembers?.filter(Boolean) || []) : [],
+    participationType: participationTypeLabel,
+    teamFormed: teamFormedVal,
+    teamStatus: isTeam ? "yes" : isNeedTeam ? "looking" : "no",
+    teamName: teamNameVal,
+    teamLeader: teamLeaderVal,
+    teamMembers: teamMembersVal,
     problemStatement: formData.problemIdea?.trim() || "",
     projectIdea: formData.shortIdea?.trim() || "",
     feePaid: feePaidStatus,

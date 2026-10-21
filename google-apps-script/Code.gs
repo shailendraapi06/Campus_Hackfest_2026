@@ -43,7 +43,7 @@ function setupSheet() {
     sheet = ss.insertSheet(REGISTRATIONS_SHEET_NAME);
   }
 
-  // Exact 15 Clean Columns (Payment has ONLY 2 columns: Status & Mode)
+  // Exact 16 Clean Columns (Including Team Formed? Yes/No)
   const headers = [
     "Registration ID",     // Col 1
     "Timestamp",           // Col 2
@@ -52,14 +52,15 @@ function setupSheet() {
     "Email",               // Col 5
     "Phone",               // Col 6
     "Skills",              // Col 7
-    "Participation Mode",  // Col 8 (Solo / Team)
-    "Team Name",           // Col 9
-    "Team Leader",         // Col 10
-    "Team Members",        // Col 11
-    "Problem Statement",   // Col 12
-    "Project Idea",        // Col 13
-    "Payment Status",      // Col 14 (Paid / Not Paid)
-    "Payment Mode"         // Col 15 (Cash / Online / N/A)
+    "Participation Mode",  // Col 8 (Solo / Team / Need a Team)
+    "Team Formed?",        // Col 9 (Yes / No)
+    "Team Name",           // Col 10
+    "Team Leader",         // Col 11
+    "Team Members",        // Col 12
+    "Problem Statement",   // Col 13
+    "Project Idea",        // Col 14
+    "Payment Status",      // Col 15 (Paid / Not Paid)
+    "Payment Mode"         // Col 16 (Cash / Online / N/A)
   ];
 
   sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
@@ -74,7 +75,7 @@ function setupSheet() {
   sheet.setFrozenRows(1);
   sheet.autoResizeColumns(1, headers.length);
   
-  Logger.log("✅ 'Registrations' sheet initialized with 15 clean columns!");
+  Logger.log("✅ 'Registrations' sheet initialized with 16 clean columns!");
 }
 
 // ==============================================================================
@@ -185,18 +186,44 @@ function doPost(e) {
 
     // Participation & Team Details
     const isTeam = data.participationType === "Team" || data.participationType === "team" || data.teamStatus === "yes";
-    const participationMode = isTeam ? "Team (3–5 Members)" : "Individual / Solo";
-    const teamName = isTeam ? String(data.teamName || "").trim() : "N/A (Solo)";
-    const teamLeader = isTeam ? String(data.teamLeader || fullName).trim() : fullName;
-    let teamMembers = "";
-    if (isTeam && Array.isArray(data.teamMembers)) {
-      teamMembers = data.teamMembers.filter(Boolean).join(", ");
+    const isLookingForTeam = data.participationType === "need_team" || data.participationType === "looking_for_team" || String(data.participationType).includes("Looking");
+
+    let participationMode = "Individual / Solo";
+    let teamFormed = "No"; // "Yes" if team is formed, "No" if not formed
+    let teamName = String(data.teamName || fullName + " (Solo)").trim();
+    let teamLeader = fullName;
+    let teamMembers = "N/A (Solo)";
+
+    if (isTeam) {
+      participationMode = "Team (3–5 Members)";
+      teamFormed = "Yes";
+      teamName = String(data.teamName || "Team").trim();
+      teamLeader = String(data.teamLeader || fullName).trim();
+      teamMembers = Array.isArray(data.teamMembers) ? data.teamMembers.filter(Boolean).join(", ") : "";
+    } else if (isLookingForTeam) {
+      participationMode = "Looking for Team";
+      teamFormed = "No";
+      teamName = String(data.teamName || "Pending Team Formation").trim();
+      teamLeader = fullName;
+      teamMembers = "Looking for teammates (Desk matchmaking)";
+    } else {
+      // Individual / Solo
+      participationMode = "Individual / Solo";
+      teamFormed = "No";
+      teamName = String(data.teamName || fullName + " (Solo)").trim();
+      teamLeader = fullName;
+      teamMembers = "N/A (Solo)";
+    }
+
+    // If explicit teamFormed is provided in payload, respect it
+    if (data.teamFormed) {
+      teamFormed = String(data.teamFormed).trim();
     }
 
     const problemStatement = String(data.problemStatement || data.problemIdea || "").trim();
     const projectIdea = String(data.projectIdea || data.shortIdea || "").trim();
 
-    // 7. Append Row (Exactly 15 Columns)
+    // 7. Append Row (Exactly 16 Columns)
     const newRow = [
       registrationId,       // Col 1: Registration ID
       timestamp,            // Col 2: Timestamp
@@ -206,13 +233,14 @@ function doPost(e) {
       "'" + phone,          // Col 6: Phone
       skillsString,         // Col 7: Skills
       participationMode,    // Col 8: Participation Mode
-      teamName,             // Col 9: Team Name
-      teamLeader,           // Col 10: Team Leader
-      teamMembers,          // Col 11: Team Members
-      problemStatement,     // Col 12: Problem Statement
-      projectIdea,          // Col 13: Project Idea
-      paymentStatus,        // Col 14: Payment Status (Paid / Not Paid)
-      paymentMode           // Col 15: Payment Mode (Cash / Online / N/A)
+      teamFormed,           // Col 9: Team Formed? (Yes / No)
+      teamName,             // Col 10: Team Name
+      teamLeader,           // Col 11: Team Leader
+      teamMembers,          // Col 12: Team Members
+      problemStatement,     // Col 13: Problem Statement
+      projectIdea,          // Col 14: Project Idea
+      paymentStatus,        // Col 15: Payment Status (Paid / Not Paid)
+      paymentMode           // Col 16: Payment Mode (Cash / Online / N/A)
     ];
 
     sheet.appendRow(newRow);
