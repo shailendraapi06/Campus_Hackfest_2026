@@ -1,6 +1,6 @@
 /**
- * Campus HackFest 2026 Results Data (Government Polytechnic Kanpur)
- * 
+ * Techfest 2026 Results Data (Government Polytechnic Kanpur)
+ * Announced on Rays of Raunak stage (28 October 2026)
  * Organizers: Update this file easily with the official winners and scores.
  */
 

@@ -7,34 +7,26 @@ import {
   CheckCircle, 
   Presentation, 
   TrendingUp, 
-  ArrowRight,
   GraduationCap,
   BookOpen,
-  HeartPulse,
-  Leaf,
   ShieldAlert,
-  Bus,
-  Coins,
-  Sprout,
-  Users,
+  Leaf,
   Sparkles,
-  Info
+  Users,
+  Zap,
+  HelpCircle
 } from 'lucide-react';
 import SectionHeading from '../components/common/SectionHeading';
 import { HACKATHON_CONFIG } from '../config/hackathonConfig';
 
-// Map icon string names to Lucide icons
 const iconMap = {
   GraduationCap: GraduationCap,
   BookOpen: BookOpen,
-  HeartPulse: HeartPulse,
-  Leaf: Leaf,
   ShieldAlert: ShieldAlert,
-  Bus: Bus,
-  Coins: Coins,
-  Sprout: Sprout,
+  Leaf: Leaf,
+  Sparkles: Sparkles,
   Users: Users,
-  Sparkles: Sparkles
+  Zap: Zap
 };
 
 export default function Challenge() {
@@ -42,44 +34,44 @@ export default function Challenge() {
     {
       num: "01",
       title: "Identify",
-      subtitle: "Genuine Real Problem",
+      subtitle: "Authentic Problem Area",
       icon: Target,
-      desc: "Spot an authentic friction point in your daily routine, campus environment, local neighborhood, or society. Avoid abstract or artificial problems."
+      desc: "Observe friction in campus routines, student life, local communities, or the environment. Choose a problem that genuinely exists."
     },
     {
       num: "02",
-      title: "Understand",
-      subtitle: "Root Cause & Stakeholders",
+      title: "Analyze",
+      subtitle: "Root Cause & Needs",
       icon: Lightbulb,
-      desc: "Analyse why existing systems fail to resolve this issue. Who is affected? What constraints exist (connectivity, cost, accessibility)?"
+      desc: "Understand who is affected and why current tools fall short. Keep constraints like accessibility, speed, and simplicity in focus."
     },
     {
       num: "03",
-      title: "Design & Build",
-      subtitle: "Tech-Based Prototype",
+      title: "Build",
+      subtitle: "Functional Tech Prototype",
       icon: Wrench,
-      desc: "Select practical web, mobile, or hardware tools. Engineer a lightweight, working functional prototype during the 7-hour sprint."
+      desc: "Select appropriate frameworks, libraries, or APIs. Build a working software prototype during the sprint on 27 October."
     },
     {
       num: "04",
       title: "Test",
-      subtitle: "Validate User Flow",
+      subtitle: "Validate User Journey",
       icon: CheckCircle,
-      desc: "Verify that the core end-to-end user journey works cleanly without blocking bugs. Handle realistic inputs."
+      desc: "Test primary workflows, edge cases, and ensure clean responsiveness across mobile and desktop screens."
     },
     {
       num: "05",
-      title: "Demonstrate",
-      subtitle: "Live Working Demo",
+      title: "Pitch",
+      subtitle: "Live Demonstration",
       icon: Presentation,
-      desc: "Showcase the application running live in front of the 3rd-year judging panel. Walk through the core functionality with confidence."
+      desc: "Demo the live prototype to 3rd-year judges and mentors. Clearly articulate your technical decisions and workflow."
     },
     {
       num: "06",
       title: "Impact",
-      subtitle: "Tangible Real-World Value",
+      subtitle: "Real-World Feasibility",
       icon: TrendingUp,
-      desc: "Demonstrate how adoption of this prototype will save time, reduce costs, enhance accessibility, or improve student life."
+      desc: "Demonstrate how adoption of your solution creates tangible value, efficiency, or positive societal benefit."
     }
   ];
 
@@ -88,45 +80,120 @@ export default function Challenge() {
       
       {/* HEADER */}
       <SectionHeading
-        badge="The Challenge"
-        title="Theme: Solve a"
-        highlight="Real Problem"
-        subtitle="We challenge 1st & 2nd year innovators to move beyond toy clones. Identify genuine everyday pain points and engineer practical technology prototypes."
+        badge="Techfest 2026 Themes"
+        title="Suggested Problem"
+        highlight="Themes"
+        subtitle="Explore inspiration areas for your hackathon project. Themes are open-ended guides designed to spark your creativity, not strict mandates."
       />
 
       {/* CORE PHILOSOPHY CALLOUT */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-brand-cyan/10 via-brand-purple/10 to-transparent border border-brand-cyan/30 mb-20">
+      <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-cyan-500/10 via-amber-500/10 to-transparent border border-cyan-400/30 mb-20">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="max-w-3xl">
-            <h3 className="text-xl sm:text-2xl font-black text-white">
-              "Don't build for an imaginary unicorn startup. Build for the people around you."
+            <span className="text-[10px] font-mono uppercase tracking-widest text-cyan-300 block mb-1">
+              Hackathon Guiding Principle
+            </span>
+            <h3 className="text-xl sm:text-2xl font-black text-white font-display">
+              "Focus on real problems facing real people. Utility and user value always triumph over complexity."
             </h3>
-            <p className="mt-2 text-sm text-slate-300 leading-relaxed">
-              At Campus HackFest, an app that solves 100 students' daily hostel mess token disputes or helps classmates navigate college lectures scores higher than an incomplete, buzzword-heavy clone.
+            <p className="mt-2 text-xs sm:text-sm text-slate-300 leading-relaxed">
+              At Techfest 2026, a clean application that saves students 30 minutes in lab queueing or prevents hostel food wastage scores higher than an incomplete buzzword clone.
             </p>
           </div>
           <div className="shrink-0">
             <Link
               to="/register"
-              className="px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider bg-brand-cyan text-dark-950 hover:bg-cyan-300 transition-colors shadow-glow-cyan"
+              className="px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider bg-gradient-to-r from-cyan-400 to-amber-300 text-dark-950 hover:brightness-110 transition-all shadow-glow-cyan"
             >
-              Enter HackFest (₹50)
+              Register for Techfest
             </Link>
           </div>
         </div>
       </div>
 
-      {/* THE 6-STEP PROCESS PIPELINE */}
+      {/* 7 SUGGESTED THEMES & PROBLEM AREAS (NOT MANDATORY PROJECTS) */}
       <div className="mb-24">
         <div className="text-center mb-12">
-          <span className="text-xs uppercase font-bold tracking-widest text-brand-cyan block mb-2">
-            Systematic Methodology
+          <span className="text-xs uppercase font-mono font-bold tracking-widest text-cyan-400 block mb-2">
+            Inspiration Tracks
           </span>
-          <h3 className="text-2xl sm:text-3xl font-extrabold text-white">
+          <h3 className="text-2xl sm:text-3xl font-extrabold text-white font-display">
+            7 Suggested Challenge Themes
+          </h3>
+          <p className="text-xs sm:text-sm text-slate-400 mt-2 max-w-2xl mx-auto">
+            These problem domains are provided to inspire your brainstorm. You are encouraged to propose any project that sparks your passion.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {HACKATHON_CONFIG.challengeThemes.map((theme, index) => {
+            const IconComponent = iconMap[theme.icon] || Sparkles;
+            return (
+              <div 
+                key={theme.id} 
+                className="p-6 rounded-2xl glass-card glass-card-hover flex flex-col justify-between group relative overflow-hidden"
+              >
+                <div>
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-cyan-400 group-hover:text-amber-300 group-hover:scale-110 transition-all">
+                      <IconComponent className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-mono text-slate-500 uppercase tracking-widest block">Theme 0{index + 1}</span>
+                      <h4 className="text-base font-bold text-white font-display">{theme.title}</h4>
+                    </div>
+                  </div>
+
+                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-4">
+                    {theme.description}
+                  </p>
+                </div>
+
+                {/* Example Idea Box (Clearly labelled illustrative example) */}
+                <div className="mt-2 p-3 rounded-xl bg-[#070a12]/80 border border-white/5">
+                  <span className="text-[10px] uppercase font-mono font-semibold text-amber-400 block mb-1">
+                    Illustrative Example Only:
+                  </span>
+                  <p className="text-[11px] text-slate-400 italic">
+                    "{theme.exampleIdea}"
+                  </p>
+                  <span className="text-[9px] text-slate-500 block mt-1">
+                    (Note: This is only an example to help you understand the theme scope. You are not required to build this specific project.)
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* REQUIRED DISCLAIMER AT END OF CHALLENGES PAGE */}
+      <div className="p-8 rounded-3xl bg-gradient-to-r from-cyan-950/30 via-slate-900/60 to-amber-950/30 border-2 border-cyan-400/40 shadow-xl mb-20 text-center max-w-4xl mx-auto animate-fadeIn">
+        <div className="w-12 h-12 rounded-2xl bg-cyan-400/20 border border-cyan-400/30 flex items-center justify-center text-cyan-300 mx-auto mb-4">
+          <HelpCircle className="w-6 h-6" />
+        </div>
+        <h4 className="text-lg sm:text-xl font-bold text-white mb-3 font-display">
+          Freedom of Innovation Disclaimer
+        </h4>
+        <p className="text-sm sm:text-base text-slate-200 leading-relaxed max-w-2xl mx-auto font-medium">
+          “{HACKATHON_CONFIG.challengeDisclaimer}”
+        </p>
+        <div className="mt-4 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-cyan-300 font-mono">
+          <span>Your Idea. Your Vision. Zero Restrictions.</span>
+        </div>
+      </div>
+
+      {/* THE 6-STEP PROCESS PIPELINE */}
+      <div className="mb-20">
+        <div className="text-center mb-12">
+          <span className="text-xs uppercase font-mono font-bold tracking-widest text-cyan-400 block mb-2">
+            Structured Workflow
+          </span>
+          <h3 className="text-2xl sm:text-3xl font-extrabold text-white font-display">
             The 6-Step Challenge Pipeline
           </h3>
-          <p className="text-sm text-slate-400 mt-2">
-            How every successful team progresses throughout the sprint:
+          <p className="text-xs sm:text-sm text-slate-400 mt-2">
+            How successful participants transition from initial brainstorming to final live pitch:
           </p>
         </div>
 
@@ -140,15 +207,15 @@ export default function Challenge() {
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-xs font-mono font-black px-2.5 py-1 rounded bg-brand-cyan/15 text-brand-cyan border border-brand-cyan/30">
-                      STEP {step.num}
+                    <span className="text-xs font-mono font-black px-2.5 py-1 rounded bg-cyan-400/15 text-cyan-400 border border-cyan-400/30">
+                      PHASE {step.num}
                     </span>
-                    <div className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 group-hover:text-brand-cyan transition-colors">
+                    <div className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 group-hover:text-cyan-400 transition-colors">
                       <Icon className="w-4 h-4" />
                     </div>
                   </div>
-                  <h4 className="text-lg font-bold text-white">{step.title}</h4>
-                  <p className="text-xs font-semibold text-brand-purple mb-2">{step.subtitle}</p>
+                  <h4 className="text-base font-bold text-white font-display">{step.title}</h4>
+                  <p className="text-xs font-semibold text-amber-400 mb-2">{step.subtitle}</p>
                   <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">{step.desc}</p>
                 </div>
               </div>
@@ -157,66 +224,11 @@ export default function Challenge() {
         </div>
       </div>
 
-      {/* 10 EXPLORATION DOMAINS */}
-      <div className="mb-20">
-        <div className="text-center mb-12">
-          <span className="text-xs uppercase font-bold tracking-widest text-brand-purple block mb-2">
-            Inspiration Tracks
-          </span>
-          <h3 className="text-2xl sm:text-3xl font-extrabold text-white">
-            10 Example Problem Domains
-          </h3>
-          <p className="text-sm text-slate-400 mt-2 max-w-2xl mx-auto">
-            These tracks are illustrative starting points to inspire your team. You are free to tackle any domain as long as it solves a real problem.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {HACKATHON_CONFIG.domains.map((domain, index) => {
-            const IconComponent = iconMap[domain.icon] || Sparkles;
-            return (
-              <div 
-                key={domain.id} 
-                className="p-6 rounded-2xl glass-card glass-card-hover flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-cyan/20 to-brand-purple/20 border border-brand-cyan/30 flex items-center justify-center text-brand-cyan">
-                      <IconComponent className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <span className="text-[11px] font-mono text-slate-400">Track {String(index + 1).padStart(2, '0')}</span>
-                      <h4 className="text-base font-bold text-white">{domain.title}</h4>
-                    </div>
-                  </div>
-                  <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
-                    {domain.description}
-                  </p>
-                </div>
-
-                <div className="mt-5 pt-3 border-t border-white/5 flex items-center justify-between text-xs text-brand-cyan">
-                  <span>Open for all 1st & 2nd years</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* FREEDOM NOTICE */}
-      <div className="p-6 rounded-2xl bg-dark-900/60 border border-white/10 flex items-start gap-4 mb-16">
-        <Info className="w-6 h-6 text-brand-cyan shrink-0 mt-0.5" />
-        <div className="text-xs sm:text-sm text-slate-300">
-          <strong className="text-white">Note on Problem Selection:</strong> You do NOT have to choose from the list above. Any authentic, well-reasoned problem—whether technical, ecological, social, or institutional—is completely welcome. What matters is that your team can justify why it matters and demonstrate a functioning solution.
-        </div>
-      </div>
-
       {/* BOTTOM NAV */}
       <div className="flex flex-wrap items-center justify-center gap-4 pt-6 border-t border-white/5">
         <Link
           to="/rules"
-          className="px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-brand-cyan glass-pill hover:bg-white/10 transition-colors"
+          className="px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-cyan-400 glass-pill hover:bg-white/10 transition-colors"
         >
           Check Rules & Judging Rubric
         </Link>
@@ -224,7 +236,7 @@ export default function Challenge() {
           to="/schedule"
           className="px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-white glass-pill hover:bg-white/10 transition-colors"
         >
-          View Day Schedule
+          View 2-Day Schedule
         </Link>
       </div>
 

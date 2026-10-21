@@ -1,331 +1,533 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Sparkles, 
   ArrowRight, 
-  Users, 
-  Clock, 
-  Award, 
-  ShieldAlert, 
-  GraduationCap, 
-  HeartHandshake, 
-  CheckCircle2, 
+  Users,
+  Award,
+  Calendar,
   Code2, 
-  Layers, 
+  Music, 
+  Mic, 
+  CheckCircle2, 
   Zap, 
-  ExternalLink,
-  ChevronRight
+  ChevronRight,
+  ShieldCheck,
+  UserCheck,
+  Theater
 } from 'lucide-react';
 import { HACKATHON_CONFIG } from '../config/hackathonConfig';
 import SectionHeading from '../components/common/SectionHeading';
 
 export default function Home() {
+  const [activeHeroTab, setActiveHeroTab] = useState('both'); // 'both' | 'techfest' | 'raunak'
+
   return (
     <div className="pt-24 pb-20 overflow-hidden">
       
-      {/* HERO SECTION */}
-      <section className="relative px-4 sm:px-6 lg:px-8 py-16 sm:py-24 max-w-7xl mx-auto">
-        {/* Glow ambient backdrops */}
-        <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-gradient-to-tr from-brand-cyan/20 via-brand-purple/20 to-brand-pink/20 blur-[120px] rounded-full pointer-events-none" />
-        
-        <div className="relative z-10 text-center max-w-4xl mx-auto">
-          {/* Eligibility & Info pill */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-pill text-xs sm:text-sm font-semibold text-brand-cyan mb-6 shadow-glow-cyan/20 animate-float">
-            <Sparkles className="w-4 h-4 text-brand-cyan animate-spin" />
-            <span>Exclusively for 1st & 2nd Year IT Department Students</span>
-            <span className="w-1 h-1 rounded-full bg-brand-cyan"></span>
-            <span className="text-slate-300">Govt Polytechnic Kanpur</span>
+      {/* ========================================================================= */}
+      {/* 1. CINEMATIC HERO SECTION: TECHFEST × RAYS OF RAUNAK 2026 */}
+      {/* ========================================================================= */}
+      <section className="relative px-4 sm:px-6 lg:px-8 pt-12 pb-20 sm:pt-20 sm:pb-28 max-w-7xl mx-auto">
+        {/* Atmospheric dual-light background gradients */}
+        <div className="absolute top-0 left-1/4 -translate-x-1/2 w-[550px] h-[400px] bg-cyan-500/15 blur-[140px] rounded-full pointer-events-none" />
+        <div className="absolute top-10 right-1/4 translate-x-1/2 w-[550px] h-[400px] bg-amber-500/15 blur-[140px] rounded-full pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[450px] bg-purple-500/10 blur-[160px] rounded-full pointer-events-none" />
+
+        <div className="relative z-10 max-w-6xl mx-auto text-center">
+          
+          {/* Top Editorial Eyebrow */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-pill text-xs font-semibold text-slate-300 mb-8 border border-white/10 shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+            <span className="font-mono text-[11px] uppercase tracking-wider text-cyan-300">2 Connected Events</span>
+            <span className="text-slate-600">•</span>
+            <span className="font-mono text-[11px] uppercase tracking-wider text-amber-300">2 Consecutive Days</span>
+            <span className="text-slate-600">•</span>
+            <span className="text-slate-400 font-sans">{HACKATHON_CONFIG.college}</span>
           </div>
 
-          {/* Main Title */}
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white mb-6">
-            CAMPUS HACKFEST{' '}
-            <span className="text-gradient block sm:inline">2026</span>
-          </h1>
-
-          {/* Theme Banner */}
-          <div className="my-6 inline-block">
-            <div className="px-6 py-3 rounded-2xl bg-dark-900/90 border border-brand-cyan/30 shadow-glow-cyan/40">
-              <span className="text-xs uppercase font-bold tracking-widest text-slate-400 block">
-                Official Hackathon Theme
+          {/* DUAL HEADLINE: BOTH TECHFEST AND RAYS OF RAUNAK CLEARLY VISIBLE */}
+          <div className="space-y-4 mb-8">
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white font-display uppercase leading-[1.08]">
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-200 to-cyan-400">
+                TECHFEST
               </span>
-              <p className="text-2xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-teal-200 to-white mt-1">
-                "{HACKATHON_CONFIG.theme}"
+              <span className="text-2xl sm:text-4xl lg:text-5xl font-light text-slate-400 my-1 block font-sans">
+                ×
+              </span>
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-rose-300">
+                RAYS OF RAUNAK
+              </span>
+            </h1>
+
+            {/* Official Tagline for Rays of Raunak (Visually Smaller Font Size than Main Event Title) */}
+            <div className="pt-2">
+              <p className="text-base sm:text-xl font-medium tracking-wide text-amber-200/90 italic font-serif">
+                “{HACKATHON_CONFIG.raysOfRaunak.tagline}”
+              </p>
+              <p className="text-xs sm:text-sm text-slate-400 font-mono mt-1 uppercase tracking-widest">
+                Official Cultural Fest Tagline
               </p>
             </div>
           </div>
 
-          {/* Supporting Text */}
-          <p className="text-lg sm:text-2xl font-medium text-slate-300 max-w-2xl mx-auto mb-4 leading-relaxed">
-            "{HACKATHON_CONFIG.tagline}"
-          </p>
-          <p className="text-sm sm:text-base text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-            {HACKATHON_CONFIG.description}
-          </p>
+          {/* DUAL EVENT SPOTLIGHT COMPOSITION (HERO CARDS) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl mx-auto my-10 text-left">
+            
+            {/* Techfest Spotlight Card */}
+            <div 
+              onMouseEnter={() => setActiveHeroTab('techfest')}
+              className={`p-6 sm:p-7 rounded-3xl transition-all duration-300 relative group overflow-hidden ${
+                activeHeroTab === 'techfest' || activeHeroTab === 'both'
+                  ? 'glass-card border-cyan-400/50 shadow-glow-cyan/30 scale-[1.01]'
+                  : 'glass-card opacity-80'
+              }`}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-cyan-400/15 text-cyan-300 border border-cyan-400/30">
+                  <Code2 className="w-3 h-3" />
+                  Day 01 • College Hackathon
+                </span>
+                <span className="text-xs font-mono font-bold text-cyan-400">
+                  27 Oct 2026
+                </span>
+              </div>
 
-          {/* Primary & Secondary CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-white font-display">
+                TECHFEST
+              </h2>
+              <p className="text-xs text-cyan-300 font-medium mt-0.5">
+                Build. Innovate. Solve Real Problems.
+              </p>
+              <p className="text-xs text-slate-300 mt-2.5 leading-relaxed">
+                A 7+ hour collaborative hackathon where 1st & 2nd-year developers solve authentic campus & societal problems with 3rd-year mentor guidance.
+              </p>
+
+              <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between text-xs text-slate-400">
+                <span>09:30 AM – 05:30 PM</span>
+                <span className="text-cyan-400 font-semibold flex items-center gap-1">
+                  IT Labs <ChevronRight className="w-3 h-3" />
+                </span>
+              </div>
+            </div>
+
+            {/* Rays of Raunak Spotlight Card */}
+            <div 
+              onMouseEnter={() => setActiveHeroTab('raunak')}
+              className={`p-6 sm:p-7 rounded-3xl transition-all duration-300 relative group overflow-hidden ${
+                activeHeroTab === 'raunak' || activeHeroTab === 'both'
+                  ? 'glass-card border-amber-400/50 shadow-glow-amber/30 scale-[1.01]'
+                  : 'glass-card opacity-80'
+              }`}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-amber-400/15 text-amber-300 border border-amber-400/30">
+                  <Sparkles className="w-3 h-3" />
+                  Day 02 • Cultural Fest
+                </span>
+                <span className="text-xs font-mono font-bold text-amber-400">
+                  28 Oct 2026
+                </span>
+              </div>
+
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-white font-display">
+                RAYS OF RAUNAK
+              </h2>
+              <p className="text-xs text-amber-300 font-medium mt-0.5 italic">
+                “Let Every Talent Shine”
+              </p>
+              <p className="text-xs text-slate-300 mt-2.5 leading-relaxed">
+                A high-energy cultural fest celebrating singing, dance, mimicry, and stage talent, concluding with the Techfest hackathon results & grand prize distribution.
+              </p>
+
+              <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between text-xs text-slate-400">
+                <span>11:00 AM – 05:00 PM</span>
+                <span className="text-amber-400 font-semibold flex items-center gap-1">
+                  Auditorium <ChevronRight className="w-3 h-3" />
+                </span>
+              </div>
+            </div>
+
+          </div>
+
+          {/* HERO ACTIONS: REGISTRATION CTA & EXPLORE */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-6 mb-12">
             <Link
               to="/register"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl font-bold text-sm tracking-wider uppercase text-dark-950 bg-gradient-to-r from-brand-cyan via-teal-300 to-brand-cyan hover:shadow-glow-cyan hover:scale-105 active:scale-95 transition-all shadow-lg"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-9 py-4 rounded-2xl font-black text-sm uppercase tracking-wider text-dark-950 bg-gradient-to-r from-cyan-400 via-teal-300 to-amber-300 hover:shadow-glow-cyan hover:scale-[1.03] active:scale-[0.98] transition-all shadow-xl"
             >
-              <span>Register Now (₹50)</span>
+              <span>Register for Techfest (₹200)</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
 
             <Link
-              to="/challenge"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-sm text-white glass-pill hover:bg-white/10 hover:border-white/20 transition-all"
+              to="/schedule"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-bold text-sm text-white glass-pill hover:bg-white/10 hover:border-white/20 transition-all"
             >
-              <span>Explore Challenge</span>
-              <ChevronRight className="w-4 h-4 text-slate-400" />
+              <span>View 2-Day Schedule</span>
+              <Calendar className="w-4 h-4 text-amber-400" />
             </Link>
           </div>
 
-          {/* Quick Highlight Badges */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-3xl mx-auto text-left">
-            <div className="p-3.5 rounded-xl glass-card border-white/5">
-              <span className="text-[11px] text-slate-400 block font-medium">Eligibility</span>
-              <p className="text-sm font-bold text-white mt-0.5">1st & 2nd Years</p>
+          {/* Quick Highlight Badges Bar */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto text-left">
+            <div className="p-4 rounded-2xl glass-card border-white/5">
+              <span className="text-[10px] text-slate-400 uppercase font-mono block">Eligibility</span>
+              <p className="text-sm font-bold text-white mt-0.5">1st & 2nd Year Students</p>
             </div>
-            <div className="p-3.5 rounded-xl glass-card border-white/5">
-              <span className="text-[11px] text-slate-400 block font-medium">Team Size</span>
-              <p className="text-sm font-bold text-white mt-0.5">{HACKATHON_CONFIG.teamSizeText}</p>
+            <div className="p-4 rounded-2xl glass-card border-white/5">
+              <span className="text-[10px] text-slate-400 uppercase font-mono block">Participation</span>
+              <p className="text-sm font-bold text-white mt-0.5">Solo or 3–5 Member Teams</p>
             </div>
-            <div className="p-3.5 rounded-xl glass-card border-white/5">
-              <span className="text-[11px] text-slate-400 block font-medium">Entry Fee</span>
-              <p className="text-sm font-bold text-brand-cyan mt-0.5">{HACKATHON_CONFIG.entryFeeText}</p>
+            <div className="p-4 rounded-2xl glass-card border-white/5">
+              <span className="text-[10px] text-slate-400 uppercase font-mono block">Compulsory Fee</span>
+              <p className="text-sm font-bold text-cyan-300 mt-0.5">₹200 per participant</p>
             </div>
-            <div className="p-3.5 rounded-xl glass-card border-white/5">
-              <span className="text-[11px] text-slate-400 block font-medium">Sprint Time</span>
-              <p className="text-sm font-bold text-brand-purple mt-0.5">{HACKATHON_CONFIG.time}</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* QUICK STATS SECTION (Configurable from hackathonConfig.js) */}
-      <section className="px-4 sm:px-6 lg:px-8 py-12 max-w-7xl mx-auto">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {HACKATHON_CONFIG.stats.map((item, idx) => (
-            <div 
-              key={idx} 
-              className="p-6 rounded-2xl glass-card glass-card-hover relative overflow-hidden group"
-            >
-              <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-brand-cyan/5 rounded-full blur-xl group-hover:bg-brand-cyan/15 transition-all" />
-              <p className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-                {item.value}
-              </p>
-              <h3 className="text-sm font-bold text-brand-cyan mt-2">
-                {item.label}
-              </h3>
-              <p className="text-xs text-slate-400 mt-1">
-                {item.detail}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ABOUT HACKFEST SUMMARY */}
-      <section className="px-4 sm:px-6 lg:px-8 py-16 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase bg-brand-purple/10 text-brand-purple border border-brand-purple/20 mb-4">
-              <GraduationCap className="w-3.5 h-3.5" />
-              About Campus HackFest 2026
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white leading-tight">
-              Designed by Seniors. Built for IT Freshers & Sophomores.
-            </h2>
-            <p className="mt-4 text-slate-300 leading-relaxed text-base">
-              Campus HackFest was born out of a simple observation: hackathons should be approachable, educational, and fun. Rather than competing against seasoned professionals, this event is crafted specifically for 1st and 2nd-year IT Department students at Government Polytechnic Kanpur.
-            </p>
-            <p className="mt-3 text-slate-400 leading-relaxed text-sm">
-              Our 10–15 third-year organizing committee members act as hands-on mentors throughout the day. Need debugging advice? Help with Git commits? Guidance on structuring an API? We are on the lab floor with you all day.
-            </p>
-
-            <div className="mt-8 space-y-3">
-              <div className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-brand-emerald shrink-0 mt-0.5" />
-                <span className="text-sm text-slate-300">
-                  <strong className="text-white">Beginner-Friendly:</strong> Zero intimidating corporate jargon. Bring your curiosity and willingness to learn.
-                </span>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-brand-emerald shrink-0 mt-0.5" />
-                <span className="text-sm text-slate-300">
-                  <strong className="text-white">Working Prototypes:</strong> Focus on real, tangible utility over flashy slide decks.
-                </span>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-brand-emerald shrink-0 mt-0.5" />
-                <span className="text-sm text-slate-300">
-                  <strong className="text-white">Fair & Transparent:</strong> Clean 100-mark judging criteria with 30 marks dedicated to genuine real-world impact.
-                </span>
-              </div>
-            </div>
-
-            <div className="mt-8">
-              <Link
-                to="/about"
-                className="inline-flex items-center gap-2 text-sm font-semibold text-brand-cyan hover:underline"
-              >
-                <span>Read more about organizers & mentorship</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+            <div className="p-4 rounded-2xl glass-card border-white/5">
+              <span className="text-[10px] text-slate-400 uppercase font-mono block">Cultural Hours</span>
+              <p className="text-sm font-bold text-amber-300 mt-0.5">11:00 AM – 05:00 PM</p>
             </div>
           </div>
 
-          {/* Visual Highlight Card */}
-          <div className="relative">
-            <div className="p-8 rounded-3xl glass-card border border-white/10 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-48 h-48 bg-brand-purple/10 rounded-full blur-2xl pointer-events-none" />
-              
-              <div className="flex items-center justify-between pb-6 border-b border-white/10">
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 rounded-full bg-rose-500" />
-                  <div className="w-3 h-3 rounded-full bg-amber-500" />
-                  <div className="w-3 h-3 rounded-full bg-emerald-500" />
-                </div>
-                <span className="text-xs font-mono text-slate-400">hackfest_manifesto.md</span>
-              </div>
-
-              <div className="mt-6 space-y-4 font-mono text-xs sm:text-sm">
-                <div className="p-3.5 rounded-xl bg-dark-950/80 border border-white/5">
-                  <span className="text-brand-cyan font-bold"># Rule 01:</span>
-                  <p className="text-slate-300 mt-1 font-sans">
-                    Solve a problem that matters to you, your college, or your community.
-                  </p>
-                </div>
-                <div className="p-3.5 rounded-xl bg-dark-950/80 border border-white/5">
-                  <span className="text-brand-purple font-bold"># Rule 02:</span>
-                  <p className="text-slate-300 mt-1 font-sans">
-                    Build fresh. No existing complete college submissions can be repackaged.
-                  </p>
-                </div>
-                <div className="p-3.5 rounded-xl bg-dark-950/80 border border-white/5">
-                  <span className="text-brand-emerald font-bold"># Rule 03:</span>
-                  <p className="text-slate-300 mt-1 font-sans">
-                    AI tools (ChatGPT, Gemini, Copilot) are allowed, but you must explain every line of code!
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-6 pt-6 border-t border-white/10 flex items-center justify-between">
-                <span className="text-xs text-slate-400 font-medium">Ready to take the challenge?</span>
-                <Link
-                  to="/register"
-                  className="px-4 py-2 rounded-lg bg-brand-cyan/20 text-brand-cyan border border-brand-cyan/30 text-xs font-bold hover:bg-brand-cyan/30 transition-colors"
-                >
-                  Join HackFest
-                </Link>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* THE 6-STEP JOURNEY */}
-      <section className="px-4 sm:px-6 lg:px-8 py-16 max-w-7xl mx-auto border-t border-white/5">
-        <SectionHeading
-          badge="The Journey"
-          title="From Problem to Working"
-          highlight="Prototype"
-          subtitle="A structured 6-stage lifecycle guiding your hackathon sprint from first brainstorm to the final demo."
-        />
-
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {HACKATHON_CONFIG.challengeProcess.map((item, index) => (
-            <div 
-              key={index} 
-              className="p-5 rounded-2xl glass-card glass-card-hover flex flex-col justify-between group"
-            >
-              <div>
-                <span className="text-2xl font-black text-slate-500 group-hover:text-brand-cyan transition-colors font-mono">
-                  {item.step}
-                </span>
-                <h3 className="text-base font-bold text-white mt-3 group-hover:text-brand-cyan transition-colors">
-                  {item.title}
-                </h3>
-                <p className="text-xs text-slate-400 mt-2 leading-relaxed">
-                  {item.desc}
-                </p>
-              </div>
-              <div className="mt-4 pt-3 border-t border-white/5 flex items-center gap-1 text-[11px] text-brand-cyan font-semibold">
-                <span>Phase {index + 1}</span>
-                <ChevronRight className="w-3 h-3" />
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* DOMAIN TEASER */}
+      {/* ========================================================================= */}
+      {/* SECTION A: THE TWO CONNECTED EVENTS (TECHFEST & RAYS OF RAUNAK) */}
+      {/* ========================================================================= */}
       <section className="px-4 sm:px-6 lg:px-8 py-16 max-w-7xl mx-auto">
         <SectionHeading
-          badge="Problem Areas"
-          title="10 Diverse Problem"
-          highlight="Tracks"
-          subtitle="Explore authentic friction points across society and campus life. You have complete freedom to define your exact scope."
+          badge="Dual Identity"
+          title="Two Consecutive Days of"
+          highlight="Excellence"
+          subtitle="A harmonious combination of technology, problem-solving, cultural flair, and college memories."
         />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-          {HACKATHON_CONFIG.domains.slice(0, 5).map((domain) => (
-            <div key={domain.id} className="p-5 rounded-2xl glass-card glass-card-hover flex flex-col justify-between">
-              <div>
-                <div className="w-9 h-9 rounded-xl bg-brand-cyan/10 border border-brand-cyan/20 flex items-center justify-center text-brand-cyan mb-3">
-                  <Zap className="w-4 h-4" />
-                </div>
-                <h3 className="text-sm font-bold text-white mb-2">{domain.title}</h3>
-                <p className="text-xs text-slate-400 line-clamp-3 leading-relaxed">{domain.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="text-center mt-8">
-          <Link
-            to="/challenge"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider glass-pill text-brand-cyan hover:bg-white/10 transition-colors"
-          >
-            <span>View All 10 Domains & Challenge Guide</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-      </section>
-
-      {/* REGISTRATION CTA BANNER */}
-      <section className="px-4 sm:px-6 lg:px-8 py-12 max-w-7xl mx-auto">
-        <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-r from-dark-900 via-dark-850 to-dark-900 border border-brand-cyan/30 shadow-glow-cyan/20 relative overflow-hidden">
-          <div className="absolute -right-12 -top-12 w-64 h-64 bg-brand-cyan/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
           
-          <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8 text-center lg:text-left">
-            <div className="max-w-2xl">
-              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-brand-cyan/20 text-brand-cyan mb-3">
-                <Sparkles className="w-3.5 h-3.5" />
-                Registrations Now Open
-              </span>
-              <h2 className="text-2xl sm:text-4xl font-extrabold text-white">
-                Ready to Solve a Real Problem?
-              </h2>
-              <p className="text-slate-300 text-sm sm:text-base mt-2">
-                Team up with 3–4 friends (or register solo and we will match you with teammates). Nominal fee: ₹50 per participant.
-              </p>
+          {/* Event A: Techfest Card */}
+          <div className="p-8 sm:p-10 rounded-3xl glass-card border border-cyan-400/30 flex flex-col justify-between relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+
+            <div>
+              <div className="flex items-center justify-between pb-6 border-b border-white/10 mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-cyan-400/15 text-cyan-300 flex items-center justify-center">
+                    <Code2 className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="text-xs font-mono uppercase text-cyan-400 font-bold block">Day 01 • 27 October 2026</span>
+                    <h3 className="text-2xl sm:text-3xl font-extrabold text-white font-display">TECHFEST</h3>
+                  </div>
+                </div>
+                <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-cyan-400/10 text-cyan-300 border border-cyan-400/30">
+                  Hackathon
+                </span>
+              </div>
+
+              <div className="space-y-4 text-xs sm:text-sm text-slate-300">
+                <p className="leading-relaxed">
+                  Techfest brings students together to identify genuine friction points, conceptualize creative tech solutions, and write clean, working software prototypes.
+                </p>
+
+                <div className="space-y-2.5 pt-2">
+                  <div className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0" />
+                    <span><strong>Hands-on Coding:</strong> Build apps, web platforms, and software solutions.</span>
+                  </div>
+                  <div className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0" />
+                    <span><strong>Senior Mentors:</strong> 3rd-year leaders guide your architecture and debugging.</span>
+                  </div>
+                  <div className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0" />
+                    <span><strong>Live Pitching:</strong> Demonstrate your live prototype in front of judges.</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 shrink-0">
+            <div className="mt-8 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <span className="text-xs text-slate-400 font-mono">09:30 AM – 05:30 PM • IT Labs</span>
               <Link
                 to="/register"
-                className="px-8 py-4 rounded-xl font-bold text-sm tracking-wider uppercase text-dark-950 bg-brand-cyan hover:bg-cyan-300 shadow-glow-cyan transition-all"
+                className="w-full sm:w-auto px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider bg-cyan-400 text-dark-950 hover:bg-cyan-300 transition-colors shadow-glow-cyan text-center"
               >
-                Register Your Team
+                Register for Techfest
+              </Link>
+            </div>
+          </div>
+
+          {/* Event B: Rays of Raunak Card */}
+          <div className="p-8 sm:p-10 rounded-3xl glass-card border border-amber-400/30 flex flex-col justify-between relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+
+            <div>
+              <div className="flex items-center justify-between pb-6 border-b border-white/10 mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-400/15 text-amber-300 flex items-center justify-center">
+                    <Sparkles className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="text-xs font-mono uppercase text-amber-400 font-bold block">Day 02 • 28 October 2026</span>
+                    <h3 className="text-2xl sm:text-3xl font-extrabold text-white font-display">RAYS OF RAUNAK</h3>
+                  </div>
+                </div>
+                <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-amber-400/10 text-amber-300 border border-amber-400/30">
+                  Cultural Fest
+                </span>
+              </div>
+
+              <div className="space-y-4 text-xs sm:text-sm text-slate-300">
+                <p className="leading-relaxed">
+                  The official cultural festival with the tagline <em className="text-amber-200 font-semibold font-serif">“Let Every Talent Shine”</em>. An afternoon of music, dance, theatrical mimicry, and celebration.
+                </p>
+
+                <div className="space-y-2.5 pt-2">
+                  <div className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
+                    <span><strong>Singing & Music:</strong> Vocal performances, instrumental rhythms, and acoustic acts.</span>
+                  </div>
+                  <div className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
+                    <span><strong>Dance & Mimicry:</strong> Group choreography, theatrical sketches, and mimicry.</span>
+                  </div>
+                  <div className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
+                    <span><strong>Techfest Awards:</strong> Grand podium announcement of hackathon winners at 4:15 PM!</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <span className="text-xs text-slate-400 font-mono">11:00 AM – 05:00 PM • Auditorium</span>
+              <Link
+                to="/schedule"
+                className="w-full sm:w-auto px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider bg-amber-400 text-dark-950 hover:bg-amber-300 transition-colors shadow-glow-amber text-center"
+              >
+                Explore Day 2 Schedule
+              </Link>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* SECTION B: WHAT TO EXPECT */}
+      {/* ========================================================================= */}
+      <section className="px-4 sm:px-6 lg:px-8 py-16 max-w-7xl mx-auto border-t border-white/5">
+        <SectionHeading
+          badge="Student Experience"
+          title="What to"
+          highlight="Expect"
+          subtitle="A carefully designed two-day journey celebrating technological ingenuity and artistic talent."
+        />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="p-6 rounded-2xl glass-card glass-card-hover">
+            <div className="w-10 h-10 rounded-xl bg-cyan-400/15 text-cyan-300 flex items-center justify-center mb-4">
+              <Code2 className="w-5 h-5" />
+            </div>
+            <h4 className="text-base font-bold text-white mb-2 font-display">Building Real Projects</h4>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Transition from textbook theory to building functioning web and mobile prototypes that solve authentic everyday problems.
+            </p>
+          </div>
+
+          <div className="p-6 rounded-2xl glass-card glass-card-hover">
+            <div className="w-10 h-10 rounded-xl bg-purple-400/15 text-purple-300 flex items-center justify-center mb-4">
+              <Users className="w-5 h-5" />
+            </div>
+            <h4 className="text-base font-bold text-white mb-2 font-display">Collaborative Teamwork</h4>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Team up with your batchmates (3 to 5 members) or enter solo to tackle challenges side by side with senior mentors.
+            </p>
+          </div>
+
+          <div className="p-6 rounded-2xl glass-card glass-card-amber-hover">
+            <div className="w-10 h-10 rounded-xl bg-amber-400/15 text-amber-300 flex items-center justify-center mb-4">
+              <Theater className="w-5 h-5" />
+            </div>
+            <h4 className="text-base font-bold text-white mb-2 font-display">Cultural Stage Spotlight</h4>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Sing, dance, perform mimicry, and showcase non-technical talents in front of an enthusiastic college audience on Day 2.
+            </p>
+          </div>
+
+          <div className="p-6 rounded-2xl glass-card glass-card-amber-hover">
+            <div className="w-10 h-10 rounded-xl bg-rose-400/15 text-rose-300 flex items-center justify-center mb-4">
+              <Award className="w-5 h-5" />
+            </div>
+            <h4 className="text-base font-bold text-white mb-2 font-display">Podium Celebration</h4>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Celebrate standout hackathon teams and artistic performers during the grand joint award ceremony on 28 October.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* SECTION C: PARTICIPATION RULES AT A GLANCE */}
+      {/* ========================================================================= */}
+      <section className="px-4 sm:px-6 lg:px-8 py-16 max-w-7xl mx-auto">
+        <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-r from-dark-900 via-[#0a0d17] to-dark-900 border border-cyan-400/30 relative">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 pb-8 border-b border-white/10 mb-8">
+            <div>
+              <span className="text-xs uppercase font-mono font-bold tracking-widest text-cyan-400 block mb-1">
+                Transparency First
+              </span>
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-white font-display">
+                Participation Rules at a Glance
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-400 mt-1">
+                Key guidelines every participant should know before registering:
+              </p>
+            </div>
+
+            <Link
+              to="/rules"
+              className="px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-cyan-300 border border-cyan-400/40 glass-pill hover:bg-cyan-400/10 transition-colors shrink-0"
+            >
+              Read Complete Rules Handbook →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-xs text-slate-300">
+            <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5">
+              <div className="flex items-center gap-2 text-white font-bold text-sm mb-2">
+                <ShieldCheck className="w-4 h-4 text-cyan-400" />
+                <span>Eligibility</span>
+              </div>
+              <p className="leading-relaxed">
+                Open to <strong>1st-year and 2nd-year</strong> students. 3rd-year seniors serve as organizers and technical mentors.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5">
+              <div className="flex items-center gap-2 text-white font-bold text-sm mb-2">
+                <UserCheck className="w-4 h-4 text-cyan-400" />
+                <span>Solo or Teams</span>
+              </div>
+              <p className="leading-relaxed">
+                Individual / Solo participation is allowed. Teams must have <strong>3 to 5 student members</strong> (mentors not counted).
+              </p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5">
+              <div className="flex items-center gap-2 text-white font-bold text-sm mb-2">
+                <Award className="w-4 h-4 text-amber-400" />
+                <span>Compulsory Fee</span>
+              </div>
+              <p className="leading-relaxed">
+                Compulsory entry fee of <strong>₹200 per participant</strong> (not per team), collected and managed by student organizers.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5">
+              <div className="flex items-center gap-2 text-white font-bold text-sm mb-2">
+                <Calendar className="w-4 h-4 text-amber-400" />
+                <span>Event Dates</span>
+              </div>
+              <p className="leading-relaxed">
+                <strong>27 Oct:</strong> Techfest Hackathon.<br />
+                <strong>28 Oct:</strong> Rays of Raunak (11 AM – 5 PM).
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* SECTION D: CULTURAL PERFORMANCES (EXACT REQUIRED NOTICE) */}
+      {/* ========================================================================= */}
+      <section className="px-4 sm:px-6 lg:px-8 py-16 max-w-7xl mx-auto">
+        <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-tr from-amber-500/15 via-[#0f0b18] to-rose-500/15 border-2 border-amber-400/40 shadow-2xl relative overflow-hidden">
+          {/* Subtle decorative glow */}
+          <div className="absolute top-0 right-0 w-80 h-80 bg-amber-400/10 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="max-w-3xl mx-auto text-center relative z-10">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider bg-amber-400/20 text-amber-300 border border-amber-400/30 mb-4">
+              <Sparkles className="w-3.5 h-3.5" />
+              Rays of Raunak Cultural Callout
+            </span>
+
+            <h3 className="text-3xl sm:text-4xl font-extrabold text-white font-display mb-3">
+              Let Every Talent Shine
+            </h3>
+
+            {/* Performance Categories Chips */}
+            <div className="flex flex-wrap items-center justify-center gap-2.5 my-6">
+              <span className="px-3.5 py-1.5 rounded-full bg-white/10 text-xs font-semibold text-white flex items-center gap-1.5">
+                <Mic className="w-3.5 h-3.5 text-amber-400" /> Singing
+              </span>
+              <span className="px-3.5 py-1.5 rounded-full bg-white/10 text-xs font-semibold text-white flex items-center gap-1.5">
+                <Music className="w-3.5 h-3.5 text-rose-400" /> Dancing
+              </span>
+              <span className="px-3.5 py-1.5 rounded-full bg-white/10 text-xs font-semibold text-white flex items-center gap-1.5">
+                <Theater className="w-3.5 h-3.5 text-purple-400" /> Mimicry & Drama
+              </span>
+              <span className="px-3.5 py-1.5 rounded-full bg-white/10 text-xs font-semibold text-white flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-cyan-400" /> Other Student Talents
+              </span>
+            </div>
+
+            {/* EXACT MANDATORY INVITATION MESSAGE */}
+            <div className="p-6 rounded-2xl bg-black/40 border border-amber-400/30 text-amber-100 text-sm sm:text-base leading-relaxed my-6 font-medium">
+              “We’re expecting maximum participation from our first-year and second-year students! Whether your talent is singing, dancing, mimicry, or something completely different, we want to see you shine. Interested in performing? Please contact your seniors/organizers in advance so your performance can be coordinated.”
+            </div>
+
+            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <a
+                href={HACKATHON_CONFIG.links.whatsappSupport}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider bg-gradient-to-r from-amber-400 to-rose-400 text-dark-950 hover:brightness-110 transition-all shadow-md"
+              >
+                <span>Contact Seniors / Organizers to Perform</span>
+                <ArrowRight className="w-4 h-4" />
+              </a>
+
+              <Link
+                to="/schedule"
+                className="w-full sm:w-auto px-6 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider text-white glass-pill hover:bg-white/10 transition-colors"
+              >
+                View 28 Oct Schedule
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* SECTION E: FINAL CALL TO ACTION */}
+      {/* ========================================================================= */}
+      <section className="px-4 sm:px-6 lg:px-8 py-16 max-w-7xl mx-auto">
+        <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-r from-dark-950 via-[#070b14] to-dark-950 border border-cyan-400/30 shadow-glow-cyan/20 text-center relative overflow-hidden">
+          <div className="max-w-2xl mx-auto space-y-4">
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider bg-cyan-400/20 text-cyan-300">
+              <Zap className="w-3.5 h-3.5" />
+              Registrations Open Now
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white font-display">
+              Ready to Build, Compete & Shine?
+            </h2>
+            <p className="text-sm text-slate-300 leading-relaxed">
+              Step forward for Techfest Hackathon on 27 October, and celebrate together at Rays of Raunak Cultural Fest on 28 October 2026.
+            </p>
+            <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link
+                to="/register"
+                className="w-full sm:w-auto px-10 py-4 rounded-xl font-bold text-xs uppercase tracking-wider bg-gradient-to-r from-cyan-400 via-teal-300 to-amber-300 text-dark-950 hover:brightness-110 shadow-glow-cyan transition-all"
+              >
+                Complete Registration (₹200)
               </Link>
               <Link
-                to="/rules"
-                className="px-6 py-4 rounded-xl font-bold text-sm text-slate-300 glass-pill hover:bg-white/10 transition-all"
+                to="/challenge"
+                className="w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-xs uppercase tracking-wider text-slate-300 glass-pill hover:bg-white/10 transition-colors"
               >
-                Review Rules
+                Explore Challenge Themes
               </Link>
             </div>
           </div>

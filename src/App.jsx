@@ -3,15 +3,13 @@ import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-route
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 
-// Pages
+// Active Pages
 import Home from './pages/Home';
 import About from './pages/About';
 import Challenge from './pages/Challenge';
 import Rules from './pages/Rules';
 import Schedule from './pages/Schedule';
 import Register from './pages/Register';
-import Teams from './pages/Teams';
-import Results from './pages/Results';
 
 // Scroll to top helper on route change
 function ScrollToTop() {
@@ -28,7 +26,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
-      <div className="min-h-screen flex flex-col bg-dark-950 text-slate-100 mesh-grid">
+      <div className="min-h-screen flex flex-col bg-[#05070c] text-slate-100 mesh-grid selection:bg-brand-cyan/25 selection:text-white">
         <Navbar />
         <main className="flex-grow">
           <Routes>
@@ -38,8 +36,11 @@ export default function App() {
             <Route path="/rules" element={<Rules />} />
             <Route path="/schedule" element={<Schedule />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/teams" element={<Teams />} />
-            <Route path="/results" element={<Results />} />
+
+            {/* Seamless redirects for decommissioned public routes to avoid broken links */}
+            <Route path="/teams" element={<Navigate to="/schedule" replace />} />
+            <Route path="/results" element={<Navigate to="/schedule" replace />} />
+
             {/* Catch-all fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

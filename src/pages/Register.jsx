@@ -3,25 +3,22 @@ import { Link } from 'react-router-dom';
 import confetti from 'canvas-confetti';
 import {
   User,
-  Mail,
-  Phone,
-  GraduationCap,
   Code,
   Users,
   Lightbulb,
-  CreditCard,
-  Upload,
   CheckCircle,
   AlertCircle,
   Copy,
-  ExternalLink,
   Sparkles,
   ArrowRight,
-  ShieldAlert,
-  FileCheck
+  ShieldCheck,
+  UserCheck,
+  Calendar,
+  Wallet,
+  Check,
+  Info
 } from 'lucide-react';
 import SectionHeading from '../components/common/SectionHeading';
-import { HACKATHON_CONFIG } from '../config/hackathonConfig';
 import { submitRegistration } from '../services/googleSheets';
 
 const AVAILABLE_SKILLS = [
@@ -34,9 +31,11 @@ const AVAILABLE_SKILLS = [
   'PHP',
   'Django',
   'AI/ML',
-  'UI/UX',
-  'Android',
-  'Flutter'
+  'UI/UX Design',
+  'Android Development',
+  'Flutter',
+  'Node.js / Express',
+  'Git / GitHub'
 ];
 
 export default function Register() {
@@ -47,26 +46,34 @@ export default function Register() {
     phone: '',
     skills: [],
     otherSkill: '',
-    teamStatus: 'yes', // 'yes' or 'no'
+    participationType: 'individual', // 'individual' or 'team'
     teamName: '',
     teamLeader: '',
-    teamMembers: ['', '', ''],
+    teamMembers: ['', '', '', ''], // supports up to 4 additional members (total 5)
     problemIdea: '',
     shortIdea: '',
-    transactionId: '',
-    screenshotPreview: null
+    // Section E: Fee Payment Status
+    feePaid: '', // 'Paid' or 'Not Paid'
+    paymentMethod: '' // 'Cash' or 'Online'
   });
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionResult, setSubmissionResult] = useState(null);
-  const [copiedUpi, setCopiedUpi] = useState(false);
   const [copiedId, setCopiedId] = useState(false);
 
   // Field change handler
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => {
+      const updated = { ...prev, [name]: value };
+      // If user switches feePaid to 'Not Paid', reset paymentMethod
+      if (name === 'feePaid' && value === 'Not Paid') {
+        updated.paymentMethod = '';
+      }
+      return updated;
+    });
+
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: null }));
     }
@@ -83,39 +90,21 @@ export default function Register() {
           : [...prev.skills, skill]
       };
     });
+    if (errors.skills) {
+      setErrors((prev) => ({ ...prev, skills: null }));
+    }
   };
 
-  // Team member change handler
+  // Team member name handler
   const handleMemberChange = (index, value) => {
     setFormData((prev) => {
       const updated = [...prev.teamMembers];
       updated[index] = value;
       return { ...prev, teamMembers: updated };
     });
-  };
-
-  // Payment screenshot upload
-  const handleScreenshotUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        setErrors((prev) => ({ ...prev, screenshot: 'File size must be under 5MB.' }));
-        return;
-      }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData((prev) => ({ ...prev, screenshotPreview: reader.result }));
-        setErrors((prev) => ({ ...prev, screenshot: null }));
-      };
-      reader.readAsDataURL(file);
+    if (errors.teamMembers) {
+      setErrors((prev) => ({ ...prev, teamMembers: null }));
     }
-  };
-
-  // Copy UPI ID
-  const copyUpiId = () => {
-    navigator.clipboard.writeText(HACKATHON_CONFIG.upi.upiId);
-    setCopiedUpi(true);
-    setTimeout(() => setCopiedUpi(false), 2000);
   };
 
   // Copy Assigned Registration ID
@@ -127,68 +116,47 @@ export default function Register() {
     }
   };
 
-  // Quick demo auto-filler for organizers/testers
-  const fillDemoData = () => {
+  // Quick demo auto-filler for testing
+  const fillDemoData = (type = 'individual') => {
     const randomId = Math.floor(100 + Math.random() * 900);
-    const sampleSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="240" viewBox="0 0 400 240">
-      <rect width="400" height="240" fill="#0f172a" rx="16"/>
-      <rect x="12" y="12" width="376" height="216" fill="#1e293b" rx="12" stroke="#38bdf8" stroke-width="2"/>
-      <text x="200" y="45" font-family="sans-serif" font-size="14" font-weight="bold" fill="#38bdf8" text-anchor="middle">UPI PAYMENT RECEIPT</text>
-      <text x="200" y="85" font-family="sans-serif" font-size="32" font-weight="bold" fill="#ffffff" text-anchor="middle">₹50.00</text>
-      <text x="200" y="115" font-family="sans-serif" font-size="12" fill="#94a3b8" text-anchor="middle">Paid to: Campus HackFest 2026</text>
-      <text x="200" y="145" font-family="sans-serif" font-size="12" fill="#a855f7" text-anchor="middle">hackfest2026@oksbi</text>
-      <text x="200" y="180" font-family="monospace" font-size="12" font-weight="bold" fill="#10b981" text-anchor="middle">UTR: UPI${Date.now().toString().slice(-8)}</text>
-      <text x="200" y="210" font-family="sans-serif" font-size="10" fill="#64748b" text-anchor="middle">Status: Successful (Test Verified)</text>
-    </svg>`;
-    const sampleDataUrl = 'data:image/svg+xml;base64,' + btoa(sampleSvg);
-
     const randomPhone = '98' + Math.floor(10000000 + Math.random() * 90000000);
 
-    setFormData({
-      fullName: 'Rahul Sharma',
-      year: '2nd Year',
-      email: `rahul.test${randomId}@college.edu`,
-      phone: randomPhone,
-      skills: ['React', 'JavaScript', 'UI/UX'],
-      otherSkill: 'Git, Tailwind',
-      teamStatus: 'yes',
-      teamName: `Team ${randomId}`,
-      teamLeader: 'Rahul Sharma',
-      teamMembers: ['Aman Verma', 'Priya Patel'],
-      problemIdea: 'Automated campus laboratory seat availability detection',
-      shortIdea: 'Lightweight computer vision counter logging empty desks',
-      transactionId: `RCPT-${Date.now().toString().slice(-6)}`,
-      screenshotPreview: sampleDataUrl,
-      screenshotBase64: sampleDataUrl,
-      screenshotMimeType: 'image/svg+xml',
-      screenshotFileName: 'test_payment_receipt.svg'
-    });
+    if (type === 'team') {
+      setFormData({
+        fullName: 'Aarav Sharma',
+        year: '2nd Year',
+        email: `aarav.team${randomId}@gpkanpur.edu`,
+        phone: randomPhone,
+        skills: ['React', 'JavaScript', 'Python', 'UI/UX Design'],
+        otherSkill: 'Tailwind, Git',
+        participationType: 'team',
+        teamName: `Neural Vanguard ${randomId}`,
+        teamLeader: 'Aarav Sharma',
+        teamMembers: ['Rohan Gupta', 'Priya Verma', 'Ananya Singh', ''],
+        problemIdea: 'Hostel mess inventory optimizer and real-time meal token tracker',
+        shortIdea: 'A web app calculating student headcounts to minimize food wastage',
+        feePaid: 'Paid',
+        paymentMethod: 'Online'
+      });
+    } else {
+      setFormData({
+        fullName: 'Ishita Patel',
+        year: '1st Year',
+        email: `ishita.solo${randomId}@gpkanpur.edu`,
+        phone: randomPhone,
+        skills: ['HTML/CSS', 'JavaScript', 'Python'],
+        otherSkill: 'Figma',
+        participationType: 'individual',
+        teamName: '',
+        teamLeader: '',
+        teamMembers: ['', '', '', ''],
+        problemIdea: 'Smart lost and found desk platform for campus labs and library',
+        shortIdea: 'A lightweight portal with image matching for recovering lost items',
+        feePaid: 'Paid',
+        paymentMethod: 'Cash'
+      });
+    }
     setErrors({});
-  };
-
-  // Helper to attach a sample test receipt
-  const attachSampleReceipt = () => {
-    const sampleSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="240" viewBox="0 0 400 240">
-      <rect width="400" height="240" fill="#0f172a" rx="16"/>
-      <rect x="12" y="12" width="376" height="216" fill="#1e293b" rx="12" stroke="#38bdf8" stroke-width="2"/>
-      <text x="200" y="45" font-family="sans-serif" font-size="14" font-weight="bold" fill="#38bdf8" text-anchor="middle">UPI PAYMENT RECEIPT</text>
-      <text x="200" y="85" font-family="sans-serif" font-size="32" font-weight="bold" fill="#ffffff" text-anchor="middle">₹50.00</text>
-      <text x="200" y="115" font-family="sans-serif" font-size="12" fill="#94a3b8" text-anchor="middle">Paid to: Campus HackFest 2026</text>
-      <text x="200" y="145" font-family="sans-serif" font-size="12" fill="#a855f7" text-anchor="middle">hackfest2026@oksbi</text>
-      <text x="200" y="180" font-family="monospace" font-size="12" font-weight="bold" fill="#10b981" text-anchor="middle">UTR: UPI${Date.now().toString().slice(-8)}</text>
-      <text x="200" y="210" font-family="sans-serif" font-size="10" fill="#64748b" text-anchor="middle">Status: Successful (Test Verified)</text>
-    </svg>`;
-    const sampleDataUrl = 'data:image/svg+xml;base64,' + btoa(sampleSvg);
-
-    setFormData((prev) => ({
-      ...prev,
-      screenshotPreview: sampleDataUrl,
-      screenshotBase64: sampleDataUrl,
-      screenshotMimeType: 'image/svg+xml',
-      screenshotFileName: 'test_payment_receipt.svg',
-      transactionId: prev.transactionId || `UPI${Date.now().toString().slice(-8)}`
-    }));
-    setErrors((prev) => ({ ...prev, screenshot: null, transactionId: null }));
   };
 
   // Validate form before submit
@@ -196,43 +164,71 @@ export default function Register() {
     const newErrors = {};
     let firstInvalidId = null;
 
+    // Full Name
     if (!formData.fullName.trim()) {
       newErrors.fullName = 'Full Name is required.';
       if (!firstInvalidId) firstInvalidId = 'input-fullName';
     }
 
+    // Email
     if (!formData.email.trim()) {
       newErrors.email = 'Email address is required.';
       if (!firstInvalidId) firstInvalidId = 'input-email';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Enter a valid email address.';
+      newErrors.email = 'Please enter a valid email address.';
       if (!firstInvalidId) firstInvalidId = 'input-email';
     }
 
-    const cleanPhone = formData.phone.replace(/[\s\-\+\(\)]/g, '').replace(/^91/, '').replace(/^0/, '');
+    // Phone
+    const cleanPhone = formData.phone.replace(/[\s\-+()]/g, '').replace(/^91/, '').replace(/^0/, '');
     if (!cleanPhone) {
-      newErrors.phone = 'Phone number is required.';
+      newErrors.phone = 'Mobile / WhatsApp number is required.';
       if (!firstInvalidId) firstInvalidId = 'input-phone';
     } else if (cleanPhone.length < 10) {
-      newErrors.phone = 'Enter a valid 10-digit mobile number.';
+      newErrors.phone = 'Please enter a valid 10-digit mobile number.';
       if (!firstInvalidId) firstInvalidId = 'input-phone';
     }
 
+    // Skills
     if (formData.skills.length === 0 && !formData.otherSkill.trim()) {
-      newErrors.skills = 'Select at least one skill or specify under Other.';
+      newErrors.skills = 'Select at least one skill or specify in the text field.';
       if (!firstInvalidId) firstInvalidId = 'section-skills';
     }
 
-    if (formData.teamStatus === 'yes') {
+    // Team validation (Only when participationType === 'team')
+    if (formData.participationType === 'team') {
       if (!formData.teamName.trim()) {
-        newErrors.teamName = 'Team name is required.';
+        newErrors.teamName = 'Team name is required for team participation.';
         if (!firstInvalidId) firstInvalidId = 'input-teamName';
+      }
+      if (!formData.teamLeader.trim()) {
+        newErrors.teamLeader = 'Designated team leader name is required.';
+        if (!firstInvalidId) firstInvalidId = 'input-teamLeader';
+      }
+
+      // Valid members check: leader + teammates
+      // Minimum team size is 3 eligible student participants; Maximum is 5 eligible student participants.
+      const validTeammates = formData.teamMembers.filter((m) => m && m.trim().length > 0);
+      const totalTeamSize = 1 + validTeammates.length; // Leader + teammates
+
+      if (totalTeamSize < 3) {
+        newErrors.teamMembers = `Teams must have at least 3 eligible student members (Leader + at least 2 teammates). Current: ${totalTeamSize} member(s).`;
+        if (!firstInvalidId) firstInvalidId = 'input-teamMembers';
+      } else if (totalTeamSize > 5) {
+        newErrors.teamMembers = `Teams cannot exceed 5 eligible student members. Current: ${totalTeamSize} members.`;
+        if (!firstInvalidId) firstInvalidId = 'input-teamMembers';
       }
     }
 
-    if (!formData.screenshotPreview && !formData.screenshotBase64) {
-      newErrors.screenshot = 'Please attach your payment screenshot (or click "Attach Sample Test Receipt").';
-      if (!firstInvalidId) firstInvalidId = 'section-screenshot';
+    // Section E: Fee Payment Status validation
+    if (!formData.feePaid) {
+      newErrors.feePaid = 'Please indicate whether you have paid the participation fee.';
+      if (!firstInvalidId) firstInvalidId = 'section-fee-status';
+    } else if (formData.feePaid === 'Paid') {
+      if (!formData.paymentMethod) {
+        newErrors.paymentMethod = 'Please specify your payment method (Cash or Online).';
+        if (!firstInvalidId) firstInvalidId = 'section-payment-method';
+      }
     }
 
     setErrors(newErrors);
@@ -251,8 +247,6 @@ export default function Register() {
   // Handle Form Submission
   const handleSubmit = async (e) => {
     if (e && e.preventDefault) e.preventDefault();
-    
-    // Clear previous submission errors
     setErrors({});
 
     if (!validate()) {
@@ -274,12 +268,11 @@ export default function Register() {
 
       window.scrollTo({ top: 50, behavior: 'smooth' });
     } catch (err) {
-      console.error("Submission failed:", err);
-      setErrors((prev) => ({ 
-        ...prev, 
-        form: err.message || 'Submission failed. Please check your details and try again.' 
+      console.error('Submission failed:', err);
+      setErrors((prev) => ({
+        ...prev,
+        form: err.message || 'Submission failed. Please check your details and try again.'
       }));
-      // Scroll to error banner
       const errBanner = document.getElementById('form-error-banner');
       if (errBanner) {
         errBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -291,42 +284,42 @@ export default function Register() {
 
   return (
     <div className="pt-28 pb-24 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-
       {/* HEADER */}
       <SectionHeading
         badge="Official Registration"
-        title="Campus HackFest"
+        title="Techfest 2026"
         highlight="Registration"
-        subtitle="1st & 2nd Year IT Students • Government Polytechnic Kanpur • Entry Fee: ₹50"
+        subtitle="Open for 1st & 2nd Year Students • Government Polytechnic Kanpur • Compulsory Fee: ₹200 per participant"
       />
 
-      {/* SUCCESS CONFIRMATION MODAL / SCREEN */}
+      {/* SUCCESS CONFIRMATION SCREEN */}
       {submissionResult ? (
-        <div className="p-8 sm:p-12 rounded-3xl glass-card border border-brand-emerald/40 shadow-glow-emerald/30 text-center animate-fadeIn">
-          <div className="w-16 h-16 rounded-full bg-brand-emerald/20 border border-brand-emerald/30 flex items-center justify-center text-brand-emerald mx-auto mb-6">
+        <div className="p-8 sm:p-12 rounded-3xl glass-card border border-emerald-500/40 shadow-glow-emerald/30 text-center animate-fadeIn">
+          <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mx-auto mb-6">
             <CheckCircle className="w-8 h-8" />
           </div>
 
-          <span className="text-xs uppercase font-bold tracking-widest text-brand-emerald">
-            Registration Successful!
+          <span className="text-xs uppercase font-bold tracking-widest text-emerald-400">
+            Registration Confirmed
           </span>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-white mt-1 mb-2">
-            Welcome to Campus HackFest 2026
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-white mt-1 mb-2 font-display">
+            Welcome to Techfest × Rays of Raunak 2026!
           </h2>
-          <p className="text-xs sm:text-sm text-slate-300 max-w-md mx-auto mb-6">
-            Your registration details and payment screenshot have been submitted successfully to the IT Department organizers.
+          <p className="text-xs sm:text-sm text-slate-300 max-w-md mx-auto mb-6 leading-relaxed">
+            Your registration has been successfully recorded. Save your official Registration ID below for desk reporting on event day.
           </p>
 
           {/* REGISTRATION ID TICKET */}
-          <div className="p-6 rounded-2xl bg-dark-950/80 border border-brand-cyan/30 max-w-sm mx-auto mb-8 shadow-inner">
-            <span className="text-xs text-slate-400 font-semibold block uppercase">
+          <div className="p-6 rounded-2xl bg-[#070a12] border border-cyan-400/30 max-w-sm mx-auto mb-6 shadow-inner">
+            <span className="text-[11px] text-slate-400 font-semibold block uppercase tracking-wider">
               Your Official Registration ID
             </span>
             <div className="flex items-center justify-center gap-3 mt-2">
-              <span className="text-2xl sm:text-3xl font-black font-mono text-brand-cyan tracking-wider">
+              <span className="text-2xl sm:text-3xl font-black font-mono text-cyan-300 tracking-wider">
                 {submissionResult.registrationId}
               </span>
               <button
+                type="button"
                 onClick={copyRegId}
                 className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 transition-colors"
                 title="Copy Registration ID"
@@ -335,73 +328,126 @@ export default function Register() {
               </button>
             </div>
             {copiedId && (
-              <span className="text-[11px] text-brand-emerald font-medium block mt-1">
+              <span className="text-[11px] text-emerald-400 font-medium block mt-1">
                 Copied to clipboard!
               </span>
             )}
-            <p className="text-[11px] text-slate-400 mt-2">
-              Save this ID for check-in desk reporting at Government Polytechnic Kanpur.
-            </p>
+
+            <div className="mt-4 pt-3 border-t border-white/10 flex justify-between text-xs text-slate-300 text-left">
+              <div>
+                <span className="text-[10px] text-slate-400 block uppercase">Mode</span>
+                <span className="font-semibold text-white">{submissionResult.participationType}</span>
+              </div>
+              <div className="text-right">
+                <span className="text-[10px] text-slate-400 block uppercase">Fee Status</span>
+                <span className={`font-semibold ${submissionResult.paymentStatus === 'Paid' ? 'text-emerald-400' : 'text-amber-400'}`}>
+                  {submissionResult.paymentStatus === 'Paid' ? `Paid (${submissionResult.paymentMethod || 'Confirmed'})` : 'Collection Pending'}
+                </span>
+              </div>
+            </div>
           </div>
 
           {/* Next Steps Checklist */}
           <div className="text-left max-w-md mx-auto space-y-3 mb-8 text-xs sm:text-sm text-slate-300">
-            <h4 className="font-bold text-white text-center sm:text-left">Next Steps:</h4>
-            <div className="flex items-start gap-2.5 p-3 rounded-xl bg-dark-900/60 border border-white/5">
-              <Sparkles className="w-4 h-4 text-brand-cyan shrink-0 mt-0.5" />
-              <span>Organizers will verify your payment screenshot before event check-in.</span>
+            <h4 className="font-bold text-white text-center sm:text-left">What Happens Next:</h4>
+            <div className="flex items-start gap-2.5 p-3 rounded-xl bg-white/[0.03] border border-white/5">
+              <Calendar className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+              <span>
+                <strong>Day 1 — 27 October 2026:</strong> Report to the IT Department labs for Techfest Hackathon check-in with your College ID card.
+              </span>
             </div>
-            <div className="flex items-start gap-2.5 p-3 rounded-xl bg-dark-900/60 border border-white/5">
-              <CheckCircle className="w-4 h-4 text-brand-emerald shrink-0 mt-0.5" />
-              <span>Bring your College ID card and this Registration ID to the IT lab check-in desk on event day.</span>
+            <div className="flex items-start gap-2.5 p-3 rounded-xl bg-white/[0.03] border border-white/5">
+              <Sparkles className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+              <span>
+                <strong>Day 2 — 28 October 2026:</strong> Join Rays of Raunak Cultural Fest at 11:00 AM in the auditorium. Hackathon results & awards will be presented on stage!
+              </span>
             </div>
+            {submissionResult.paymentStatus !== 'Paid' && (
+              <div className="flex items-start gap-2.5 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-200">
+                <Wallet className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                <span>
+                  Please complete the compulsory ₹200 participant fee with your student organizers/seniors before the event morning.
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-4">
             <Link
-              to="/teams"
-              className="px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider bg-brand-cyan text-dark-950 hover:bg-cyan-300 transition-colors"
+              to="/schedule"
+              className="px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider bg-gradient-to-r from-cyan-400 to-amber-300 text-dark-950 hover:brightness-110 transition-all shadow-md"
             >
-              View Registered Teams
+              View Full 2-Day Schedule
             </Link>
             <Link
-              to="/schedule"
+              to="/challenge"
               className="px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-white glass-pill hover:bg-white/10 transition-colors"
             >
-              Check Event Schedule
+              Explore Challenge Themes
             </Link>
           </div>
         </div>
       ) : (
         /* REGISTRATION FORM */
         <form onSubmit={handleSubmit} className="space-y-10">
-
           {/* Form-level error banner */}
           {errors.form && (
-            <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-start gap-3 text-rose-300 text-sm">
+            <div
+              id="form-error-banner"
+              className="p-4 rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-start gap-3 text-rose-300 text-sm"
+            >
               <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
               <span>{errors.form}</span>
             </div>
           )}
+
+          {/* Quick Info Callout */}
+          <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-300">
+            <div className="flex items-center gap-2">
+              <Info className="w-4 h-4 text-cyan-400 shrink-0" />
+              <span>
+                Participate as a <strong>Solo individual</strong> or as a <strong>Team of 3 to 5 members</strong>. Fee: <strong>₹200 per participant</strong>.
+              </span>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={() => fillDemoData('individual')}
+                className="text-[11px] font-mono text-cyan-400 hover:text-cyan-300 underline"
+              >
+                Auto-fill Solo Test
+              </button>
+              <span className="text-slate-600">•</span>
+              <button
+                type="button"
+                onClick={() => fillDemoData('team')}
+                className="text-[11px] font-mono text-amber-400 hover:text-amber-300 underline"
+              >
+                Auto-fill Team Test
+              </button>
+            </div>
+          </div>
 
           {/* ========================================================================= */}
           {/* SECTION A: PERSONAL INFORMATION */}
           {/* ========================================================================= */}
           <div className="p-6 sm:p-8 rounded-3xl glass-card border border-white/10">
             <div className="flex items-center gap-3 pb-6 border-b border-white/5 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-brand-cyan/15 text-brand-cyan flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-cyan-500/15 text-cyan-400 flex items-center justify-center">
                 <User className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-white">Section A — Personal Information</h3>
-                <p className="text-xs text-slate-400">Only essential contact details for event coordination.</p>
+                <h3 className="text-lg font-bold text-white font-display">
+                  Section A — Personal Information
+                </h3>
+                <p className="text-xs text-slate-400">Essential contact details for registration and event check-in.</p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {/* Full Name */}
               <div>
-                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+                <label htmlFor="input-fullName" className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
                   Full Name <span className="text-rose-400">*</span>
                 </label>
                 <input
@@ -411,8 +457,8 @@ export default function Register() {
                   value={formData.fullName}
                   onChange={handleChange}
                   placeholder="e.g. Rahul Sharma"
-                  className={`w-full px-4 py-3 rounded-xl bg-dark-950 border text-white placeholder-slate-500 focus:outline-none transition-colors text-sm ${
-                    errors.fullName ? 'border-rose-500' : 'border-white/10 focus:border-brand-cyan'
+                  className={`w-full px-4 py-3 rounded-xl bg-[#070a12] border text-white placeholder-slate-500 focus:outline-none transition-colors text-sm ${
+                    errors.fullName ? 'border-rose-500' : 'border-white/10 focus:border-cyan-400'
                   }`}
                 />
                 {errors.fullName && <p className="text-xs text-rose-400 mt-1">{errors.fullName}</p>}
@@ -427,17 +473,20 @@ export default function Register() {
                   name="year"
                   value={formData.year}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-xl bg-dark-950 border border-white/10 text-white focus:outline-none focus:border-brand-cyan transition-colors text-sm"
+                  className="w-full px-4 py-3 rounded-xl bg-[#070a12] border border-white/10 text-white focus:outline-none focus:border-cyan-400 transition-colors text-sm"
                 >
-                  <option value="1st Year">1st Year (Freshman)</option>
-                  <option value="2nd Year">2nd Year (Sophomore)</option>
+                  <option value="1st Year">1st Year</option>
+                  <option value="2nd Year">2nd Year</option>
+                  <option value="3rd Year">3rd Year</option>
                 </select>
-                <p className="text-[11px] text-slate-400 mt-1">3rd-year students serve as organizers/mentors.</p>
+                <p className="text-[11px] text-slate-400 mt-1">
+                  1st, 2nd, and 3rd-year students can register for participation or team coordination.
+                </p>
               </div>
 
               {/* Email Address */}
               <div>
-                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+                <label htmlFor="input-email" className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
                   Email Address <span className="text-rose-400">*</span>
                 </label>
                 <input
@@ -446,9 +495,9 @@ export default function Register() {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="name@college.edu or personal email"
-                  className={`w-full px-4 py-3 rounded-xl bg-dark-950 border text-white placeholder-slate-500 focus:outline-none transition-colors text-sm ${
-                    errors.email ? 'border-rose-500' : 'border-white/10 focus:border-brand-cyan'
+                  placeholder="name@gpkanpur.edu or personal email"
+                  className={`w-full px-4 py-3 rounded-xl bg-[#070a12] border text-white placeholder-slate-500 focus:outline-none transition-colors text-sm ${
+                    errors.email ? 'border-rose-500' : 'border-white/10 focus:border-cyan-400'
                   }`}
                 />
                 {errors.email && <p className="text-xs text-rose-400 mt-1">{errors.email}</p>}
@@ -456,7 +505,7 @@ export default function Register() {
 
               {/* Phone Number */}
               <div>
-                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+                <label htmlFor="input-phone" className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
                   Phone / WhatsApp Number <span className="text-rose-400">*</span>
                 </label>
                 <input
@@ -466,8 +515,8 @@ export default function Register() {
                   value={formData.phone}
                   onChange={handleChange}
                   placeholder="10-digit mobile number"
-                  className={`w-full px-4 py-3 rounded-xl bg-dark-950 border text-white placeholder-slate-500 focus:outline-none transition-colors text-sm font-mono ${
-                    errors.phone ? 'border-rose-500' : 'border-white/10 focus:border-brand-cyan'
+                  className={`w-full px-4 py-3 rounded-xl bg-[#070a12] border text-white placeholder-slate-500 focus:outline-none transition-colors text-sm font-mono ${
+                    errors.phone ? 'border-rose-500' : 'border-white/10 focus:border-cyan-400'
                   }`}
                 />
                 {errors.phone && <p className="text-xs text-rose-400 mt-1">{errors.phone}</p>}
@@ -478,14 +527,16 @@ export default function Register() {
           {/* ========================================================================= */}
           {/* SECTION B: TECHNICAL SKILLS */}
           {/* ========================================================================= */}
-          <div className="p-6 sm:p-8 rounded-3xl glass-card border border-white/10">
+          <div id="section-skills" className="p-6 sm:p-8 rounded-3xl glass-card border border-white/10">
             <div className="flex items-center gap-3 pb-6 border-b border-white/5 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-brand-purple/15 text-brand-purple flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center">
                 <Code className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-white">Section B — Technical Skills</h3>
-                <p className="text-xs text-slate-400">Used for organizer planning and teammate matchmaking.</p>
+                <h3 className="text-lg font-bold text-white font-display">
+                  Section B — Technical Skills & Interests
+                </h3>
+                <p className="text-xs text-slate-400">Helps mentors understand team tech stacks and guide builds.</p>
               </div>
             </div>
 
@@ -502,10 +553,11 @@ export default function Register() {
                       type="button"
                       key={skill}
                       onClick={() => toggleSkill(skill)}
-                      className={`px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-all ${isSelected
-                          ? 'bg-brand-cyan text-dark-950 shadow-glow-cyan font-bold scale-105'
-                          : 'bg-dark-950 border border-white/10 text-slate-300 hover:text-white hover:border-white/20'
-                        }`}
+                      className={`px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-all ${
+                        isSelected
+                          ? 'bg-gradient-to-r from-cyan-400 to-teal-400 text-dark-950 shadow-glow-cyan font-bold scale-105'
+                          : 'bg-[#070a12] border border-white/10 text-slate-300 hover:text-white hover:border-white/20'
+                      }`}
                     >
                       {skill} {isSelected && '✓'}
                     </button>
@@ -517,89 +569,117 @@ export default function Register() {
               {/* Other Skills Input */}
               <div className="mt-4">
                 <label className="block text-xs text-slate-400 mb-1.5">
-                  Other tools, libraries, or hardware skills (Optional):
+                  Other tools, frameworks, or hardware proficiencies (Optional):
                 </label>
                 <input
                   type="text"
                   name="otherSkill"
                   value={formData.otherSkill}
                   onChange={handleChange}
-                  placeholder="e.g. Arduino, Rust, Figma, Node.js, Spring Boot"
-                  className="w-full px-4 py-2.5 rounded-xl bg-dark-950 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-brand-purple text-sm"
+                  placeholder="e.g. Arduino, Rust, Next.js, Figma, Kotlin, Go"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#070a12] border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-purple-400 text-sm"
                 />
               </div>
             </div>
           </div>
 
           {/* ========================================================================= */}
-          {/* SECTION C: TEAM INFORMATION */}
+          {/* SECTION C: PARTICIPATION MODE (SOLO OR TEAM 3–5) */}
           {/* ========================================================================= */}
           <div className="p-6 sm:p-8 rounded-3xl glass-card border border-white/10">
             <div className="flex items-center gap-3 pb-6 border-b border-white/5 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-brand-pink/15 text-brand-pink flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-pink-500/15 text-pink-400 flex items-center justify-center">
                 <Users className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-white">Section C — Team Formation</h3>
-                <p className="text-xs text-slate-400">Join with an existing squad or let organizers match you.</p>
+                <h3 className="text-lg font-bold text-white font-display">
+                  Section C — Participation Mode
+                </h3>
+                <p className="text-xs text-slate-400">
+                  Register as an individual participant or with a team of 3 to 5 student members.
+                </p>
               </div>
             </div>
 
-            {/* Team Status Radio Toggle */}
+            {/* Participation Type Selector */}
             <div className="mb-6">
               <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-3">
-                Do you already have a team? <span className="text-rose-400">*</span>
+                Select Participation Type <span className="text-rose-400">*</span>
               </label>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Option 1: Individual / Solo */}
                 <label
-                  className={`flex items-center gap-3 p-4 rounded-2xl border cursor-pointer transition-all ${formData.teamStatus === 'yes'
-                      ? 'bg-brand-cyan/10 border-brand-cyan/50 text-white'
-                      : 'bg-dark-950/60 border-white/10 text-slate-400 hover:border-white/20'
-                    }`}
+                  className={`flex items-start gap-3.5 p-4 rounded-2xl border cursor-pointer transition-all ${
+                    formData.participationType === 'individual'
+                      ? 'bg-cyan-500/10 border-cyan-400/60 shadow-glow-cyan/20 text-white'
+                      : 'bg-[#070a12]/60 border-white/10 text-slate-400 hover:border-white/20'
+                  }`}
                 >
                   <input
                     type="radio"
-                    name="teamStatus"
-                    value="yes"
-                    checked={formData.teamStatus === 'yes'}
+                    name="participationType"
+                    value="individual"
+                    checked={formData.participationType === 'individual'}
                     onChange={handleChange}
-                    className="accent-brand-cyan"
+                    className="accent-cyan-400 mt-1"
                   />
                   <div>
-                    <span className="text-sm font-bold block text-white">Yes, I have a team</span>
-                    <span className="text-xs text-slate-400">Team of 3 to 4 members ready</span>
+                    <div className="flex items-center gap-2">
+                      <UserCheck className="w-4 h-4 text-cyan-400" />
+                      <span className="text-sm font-bold text-white">Individual / Solo Participation</span>
+                    </div>
+                    <span className="text-xs text-slate-400 mt-1 block leading-relaxed">
+                      Compete as an individual developer. No fake teammate details required; build your own project or let mentors connect you.
+                    </span>
                   </div>
                 </label>
 
+                {/* Option 2: Team (3 to 5 Members) */}
                 <label
-                  className={`flex items-center gap-3 p-4 rounded-2xl border cursor-pointer transition-all ${formData.teamStatus === 'no'
-                      ? 'bg-brand-purple/10 border-brand-purple/50 text-white'
-                      : 'bg-dark-950/60 border-white/10 text-slate-400 hover:border-white/20'
-                    }`}
+                  className={`flex items-start gap-3.5 p-4 rounded-2xl border cursor-pointer transition-all ${
+                    formData.participationType === 'team'
+                      ? 'bg-purple-500/10 border-purple-400/60 shadow-glow-purple/20 text-white'
+                      : 'bg-[#070a12]/60 border-white/10 text-slate-400 hover:border-white/20'
+                  }`}
                 >
                   <input
                     type="radio"
-                    name="teamStatus"
-                    value="no"
-                    checked={formData.teamStatus === 'no'}
+                    name="participationType"
+                    value="team"
+                    checked={formData.participationType === 'team'}
                     onChange={handleChange}
-                    className="accent-brand-purple"
+                    className="accent-purple-400 mt-1"
                   />
                   <div>
-                    <span className="text-sm font-bold block text-white">No, I need teammates</span>
-                    <span className="text-xs text-slate-400">Organizers will pair you up based on skills</span>
+                    <div className="flex items-center gap-2">
+                      <Users className="w-4 h-4 text-purple-400" />
+                      <span className="text-sm font-bold text-white">Team Participation (3–5 Members)</span>
+                    </div>
+                    <span className="text-xs text-slate-400 mt-1 block leading-relaxed">
+                      Register with a squad of 3 to 5 eligible student participants (1 Leader + 2 to 4 teammates).
+                    </span>
                   </div>
                 </label>
               </div>
             </div>
 
-            {/* If YES: Show Team Name, Leader, and Members */}
-            {formData.teamStatus === 'yes' ? (
-              <div className="space-y-4 pt-4 border-t border-white/5">
+            {/* If Individual: Friendly Note */}
+            {formData.participationType === 'individual' && (
+              <div className="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-400/20 text-xs text-slate-300 flex items-start gap-3 animate-fadeIn">
+                <Sparkles className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
+                <div>
+                  <strong className="text-white">Individual Registration Activated:</strong> You do not need to invent fake team members. You will be registered under your own name with dedicated senior mentor support on hackathon day.
+                </div>
+              </div>
+            )}
+
+            {/* If Team: Team Details and Member Inputs */}
+            {formData.participationType === 'team' && (
+              <div className="space-y-4 pt-4 border-t border-white/5 animate-fadeIn">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+                    <label htmlFor="input-teamName" className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
                       Team Name <span className="text-rose-400">*</span>
                     </label>
                     <input
@@ -608,16 +688,16 @@ export default function Register() {
                       name="teamName"
                       value={formData.teamName}
                       onChange={handleChange}
-                      placeholder="e.g. ByteBrigade"
-                      className={`w-full px-4 py-3 rounded-xl bg-dark-950 border text-white placeholder-slate-500 focus:outline-none transition-colors text-sm ${
-                        errors.teamName ? 'border-rose-500' : 'border-white/10 focus:border-brand-cyan'
+                      placeholder="e.g. ByteBrigade, TechTitans"
+                      className={`w-full px-4 py-3 rounded-xl bg-[#070a12] border text-white placeholder-slate-500 focus:outline-none transition-colors text-sm ${
+                        errors.teamName ? 'border-rose-500' : 'border-white/10 focus:border-cyan-400'
                       }`}
                     />
                     {errors.teamName && <p className="text-xs text-rose-400 mt-1">{errors.teamName}</p>}
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+                    <label htmlFor="input-teamLeader" className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
                       Designated Team Leader <span className="text-rose-400">*</span>
                     </label>
                     <input
@@ -626,230 +706,286 @@ export default function Register() {
                       name="teamLeader"
                       value={formData.teamLeader}
                       onChange={handleChange}
-                      placeholder="Full name of leader"
-                      className={`w-full px-4 py-3 rounded-xl bg-dark-950 border text-white placeholder-slate-500 focus:outline-none transition-colors text-sm ${
-                        errors.teamLeader ? 'border-rose-500' : 'border-white/10 focus:border-brand-cyan'
+                      placeholder="Full name of leader (Member 1)"
+                      className={`w-full px-4 py-3 rounded-xl bg-[#070a12] border text-white placeholder-slate-500 focus:outline-none transition-colors text-sm ${
+                        errors.teamLeader ? 'border-rose-500' : 'border-white/10 focus:border-cyan-400'
                       }`}
                     />
                     {errors.teamLeader && <p className="text-xs text-rose-400 mt-1">{errors.teamLeader}</p>}
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
-                    Teammate Names (Optional at registration time, can be updated at check-in desk)
-                  </label>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <input
-                      type="text"
-                      placeholder="Member 2 Name"
-                      value={formData.teamMembers[0]}
-                      onChange={(e) => handleMemberChange(0, e.target.value)}
-                      className="w-full px-3 py-2.5 rounded-xl bg-dark-950 border border-white/10 text-white text-xs placeholder-slate-500"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Member 3 Name"
-                      value={formData.teamMembers[1]}
-                      onChange={(e) => handleMemberChange(1, e.target.value)}
-                      className="w-full px-3 py-2.5 rounded-xl bg-dark-950 border border-white/10 text-white text-xs placeholder-slate-500"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Member 4 (Optional)"
-                      value={formData.teamMembers[2]}
-                      onChange={(e) => handleMemberChange(2, e.target.value)}
-                      className="w-full px-3 py-2.5 rounded-xl bg-dark-950 border border-white/10 text-white text-xs placeholder-slate-500"
-                    />
+                <div id="input-teamMembers">
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
+                      Teammate Names (Min 2 required for a 3-member team; up to 4 for a 5-member team) <span className="text-rose-400">*</span>
+                    </label>
+                    <span className="text-[11px] text-cyan-400 font-mono">
+                      Total: {1 + formData.teamMembers.filter((m) => m && m.trim()).length} / 5 members
+                    </span>
                   </div>
-                </div>
-              </div>
-            ) : (
-              <div className="p-4 rounded-2xl bg-brand-purple/10 border border-brand-purple/20 text-xs text-slate-300 flex items-start gap-3">
-                <Sparkles className="w-5 h-5 text-brand-purple shrink-0 mt-0.5" />
-                <div>
-                  <strong className="text-white">Solo Hacker Mode:</strong> No worries! Our 3rd-year organizers will pool solo participants into balanced 3–4 person squads matching frontend, backend, and design proficiencies before morning opening remarks.
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <input
+                        type="text"
+                        placeholder="Member 2 Full Name *"
+                        value={formData.teamMembers[0]}
+                        onChange={(e) => handleMemberChange(0, e.target.value)}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#070a12] border border-white/10 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="text"
+                        placeholder="Member 3 Full Name *"
+                        value={formData.teamMembers[1]}
+                        onChange={(e) => handleMemberChange(1, e.target.value)}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#070a12] border border-white/10 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="text"
+                        placeholder="Member 4 Full Name (Optional)"
+                        value={formData.teamMembers[2]}
+                        onChange={(e) => handleMemberChange(2, e.target.value)}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#070a12] border border-white/10 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="text"
+                        placeholder="Member 5 Full Name (Optional)"
+                        value={formData.teamMembers[3]}
+                        onChange={(e) => handleMemberChange(3, e.target.value)}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#070a12] border border-white/10 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+                      />
+                    </div>
+                  </div>
+
+                  {errors.teamMembers && <p className="text-xs text-rose-400 mt-2">{errors.teamMembers}</p>}
+
+                  <p className="text-[11px] text-slate-400 mt-2">
+                    * Minimum team size is 3 eligible students, maximum is 5 eligible students. Third-year organizers assisting the team do not count toward this limit.
+                  </p>
                 </div>
               </div>
             )}
           </div>
 
           {/* ========================================================================= */}
-          {/* SECTION D: INITIAL PROJECT IDEA (OPTIONAL) */}
+          {/* SECTION D: PROJECT IDEA (OPTIONAL) */}
           {/* ========================================================================= */}
           <div className="p-6 sm:p-8 rounded-3xl glass-card border border-white/10">
             <div className="flex items-center gap-3 pb-6 border-b border-white/5 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-brand-amber/15 text-brand-amber flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center">
                 <Lightbulb className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-white">Section D — Initial Problem Idea (Optional)</h3>
-                <p className="text-xs text-slate-400">You do not need a complete submission now. Early ideas help mentor preparation.</p>
+                <h3 className="text-lg font-bold text-white font-display">
+                  Section D — Preliminary Project Idea (Optional)
+                </h3>
+                <p className="text-xs text-slate-400">
+                  You can explore any theme or define your own problem. Early ideas help mentors prepare.
+                </p>
               </div>
             </div>
 
             <div className="space-y-4">
               <div>
                 <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
-                  Problem You Want to Solve (Optional)
+                  Problem Area or Theme Idea (Optional)
                 </label>
                 <input
                   type="text"
                   name="problemIdea"
                   value={formData.problemIdea}
                   onChange={handleChange}
-                  placeholder="e.g. Long queues at college photocopier or mess food wastage"
-                  className="w-full px-4 py-3 rounded-xl bg-dark-950 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-brand-amber text-sm"
+                  placeholder="e.g. Smart Campus lost-and-found portal, hostel electricity monitor"
+                  className="w-full px-4 py-3 rounded-xl bg-[#070a12] border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 text-sm"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
-                  Short Solution Concept (Optional)
+                  Brief Solution Concept (Optional)
                 </label>
                 <textarea
                   name="shortIdea"
                   rows={2}
                   value={formData.shortIdea}
                   onChange={handleChange}
-                  placeholder="e.g. A lightweight mobile web token dispenser that alerts students when their prints are ready"
-                  className="w-full px-4 py-3 rounded-xl bg-dark-950 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-brand-amber text-sm resize-none"
+                  placeholder="e.g. A web app that connects campus students with peer tutors and lab batch study materials"
+                  className="w-full px-4 py-3 rounded-xl bg-[#070a12] border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 text-sm resize-none"
                 />
               </div>
             </div>
           </div>
 
           {/* ========================================================================= */}
-          {/* SECTION E: PAYMENT & VERIFICATION */}
+          {/* SECTION E: FEE PAYMENT STATUS (MODIFIED ACCORDING TO REQ #9) */}
           {/* ========================================================================= */}
-          <div className="p-6 sm:p-8 rounded-3xl glass-card border border-brand-cyan/30 shadow-glow-cyan/20">
+          <div
+            id="section-fee-status"
+            className="p-6 sm:p-8 rounded-3xl glass-card border border-cyan-400/30 shadow-glow-cyan/20 relative"
+          >
             <div className="flex items-center gap-3 pb-6 border-b border-white/5 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-brand-cyan/15 text-brand-cyan flex items-center justify-center">
-                <CreditCard className="w-5 h-5" />
+              <div className="w-10 h-10 rounded-xl bg-cyan-400/15 text-cyan-400 flex items-center justify-center">
+                <Wallet className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-white">Section E — Entry Fee & Payment Verification</h3>
-                <p className="text-xs text-slate-400">Nominal entry fee: ₹50 per participant.</p>
+                <h3 className="text-lg font-bold text-white font-display">
+                  Section E — Fee Payment Status
+                </h3>
+                <p className="text-xs text-slate-400">
+                  Participation fee: <strong className="text-cyan-300">₹200 per participant</strong> (Compulsory). Actual fee collection is managed separately by organizers.
+                </p>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start mb-6">
-
-              {/* QR Code Column */}
-              <div className="md:col-span-5 flex flex-col items-center text-center p-4 rounded-2xl bg-dark-950/80 border border-white/10">
-                <img
-                  src={HACKATHON_CONFIG.upi.qrImage}
-                  alt="Official HackFest UPI QR"
-                  className="w-48 h-48 rounded-xl border border-white/10 shadow-lg object-contain bg-white p-1"
-                />
-                <span className="text-xs font-bold text-white mt-3">Scan with GPay, PhonePe, Paytm, BHIM</span>
-
-                {/* UPI Copy Chip */}
-                <div className="mt-2 flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs font-mono text-slate-300">
-                  <span>{HACKATHON_CONFIG.upi.upiId}</span>
-                  <button
-                    type="button"
-                    onClick={copyUpiId}
-                    className="text-brand-cyan hover:text-white"
-                    title="Copy UPI ID"
-                  >
-                    <Copy className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-                {copiedUpi && (
-                  <span className="text-[10px] text-brand-emerald font-semibold mt-1">
-                    UPI ID Copied!
-                  </span>
-                )}
-                <span className="text-[11px] text-brand-cyan font-bold mt-2">
-                  Amount: ₹{HACKATHON_CONFIG.entryFee}
-                </span>
+            {/* Fee Policy Information Notice */}
+            <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 text-xs text-slate-300 mb-6 flex items-start gap-3">
+              <ShieldCheck className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
+              <div className="leading-relaxed">
+                The participation fee of <strong>₹200 per participant</strong> is compulsory for all competitors. Fee collection is managed and recorded directly by the organizing committee. This form only records your current payment status.
               </div>
+            </div>
 
-              {/* Payment Proof Inputs */}
-              <div className="md:col-span-7 space-y-4">
-                <div className="p-4 rounded-2xl bg-brand-cyan/10 border border-brand-cyan/25 text-xs text-slate-300">
-                  <span className="font-bold text-white block text-sm mb-1">
-                    Direct Screenshot Verification
-                  </span>
-                  <span>
-                    No need to manually type any UTR or Transaction ID. Simply upload your UPI payment screenshot below; organizers will verify your payment directly from the receipt image.
-                  </span>
-                </div>
+            <div className="space-y-6">
+              {/* Question 1: Have you paid the participation fee of ₹200? */}
+              <div>
+                <label className="block text-xs font-bold text-slate-200 uppercase tracking-wider mb-3">
+                  Question 1: Have you paid the participation fee of ₹200? <span className="text-rose-400">*</span>
+                </label>
 
-                <div id="section-screenshot">
-                  <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
-                    Upload Payment Screenshot <span className="text-rose-400">*</span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Option: Paid */}
+                  <label
+                    className={`flex items-center gap-3.5 p-4 rounded-2xl border cursor-pointer transition-all ${
+                      formData.feePaid === 'Paid'
+                        ? 'bg-emerald-500/15 border-emerald-400/60 shadow-glow-emerald/30 text-white'
+                        : 'bg-[#070a12]/70 border-white/10 text-slate-400 hover:border-white/20'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="feePaid"
+                      value="Paid"
+                      checked={formData.feePaid === 'Paid'}
+                      onChange={handleChange}
+                      className="accent-emerald-400 w-4 h-4"
+                    />
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <Check className="w-4 h-4 text-emerald-400" />
+                        <span className="text-sm font-bold text-white">Paid</span>
+                      </div>
+                      <span className="text-xs text-slate-400">I have completed the ₹200 fee</span>
+                    </div>
                   </label>
 
-                  <div className="relative">
+                  {/* Option: Not Paid */}
+                  <label
+                    className={`flex items-center gap-3.5 p-4 rounded-2xl border cursor-pointer transition-all ${
+                      formData.feePaid === 'Not Paid'
+                        ? 'bg-amber-500/15 border-amber-400/60 shadow-glow-amber/30 text-white'
+                        : 'bg-[#070a12]/70 border-white/10 text-slate-400 hover:border-white/20'
+                    }`}
+                  >
                     <input
-                      type="file"
-                      id="payment-screenshot"
-                      accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
-                      onChange={handleScreenshotUpload}
-                      className="hidden"
+                      type="radio"
+                      name="feePaid"
+                      value="Not Paid"
+                      checked={formData.feePaid === 'Not Paid'}
+                      onChange={handleChange}
+                      className="accent-amber-400 w-4 h-4"
                     />
-                    <label
-                      htmlFor="payment-screenshot"
-                      className={`flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-2xl cursor-pointer bg-dark-950/60 transition-colors ${
-                        errors.screenshot ? 'border-rose-500 hover:border-rose-400' : 'border-white/20 hover:border-brand-cyan'
-                      }`}
-                    >
-                      {formData.screenshotPreview ? (
-                        <div className="flex flex-col items-center gap-2">
-                          <img
-                            src={formData.screenshotPreview}
-                            alt="Screenshot preview"
-                            className="h-28 max-w-full rounded-lg object-contain border border-white/10"
-                          />
-                          <span className="text-xs font-semibold text-brand-emerald">
-                            Screenshot Attached (Click to change)
-                          </span>
-                        </div>
-                      ) : (
-                        <div className="flex flex-col items-center gap-2 text-slate-400">
-                          <Upload className="w-8 h-8 text-brand-cyan" />
-                          <span className="text-xs font-medium">Click to select screenshot (JPG, PNG, WEBP)</span>
-                          <span className="text-[10px] text-slate-400">Allowed: JPG, JPEG, PNG, WEBP (Max 5MB)</span>
-                        </div>
-                      )}
-                    </label>
-                  </div>
-                  {errors.screenshot && (
-                    <p className="text-xs text-rose-400 mt-1">{errors.screenshot}</p>
-                  )}
-
-                  {/* Quick test receipt helper button */}
-                  <div className="mt-3 flex items-center justify-between gap-2">
-                    <span className="text-[11px] text-slate-400">Testing on mobile or laptop?</span>
-                    <button
-                      type="button"
-                      onClick={attachSampleReceipt}
-                      className="px-3 py-1.5 rounded-lg bg-brand-cyan/15 hover:bg-brand-cyan/25 border border-brand-cyan/30 text-brand-cyan text-xs font-semibold transition-colors flex items-center gap-1.5"
-                    >
-                      <Sparkles className="w-3.5 h-3.5" />
-                      <span>Attach Sample Test Receipt</span>
-                    </button>
-                  </div>
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-amber-400" />
+                        <span className="text-sm font-bold text-white">Not Paid</span>
+                      </div>
+                      <span className="text-xs text-slate-400">Will pay to organizers before the event</span>
+                    </div>
+                  </label>
                 </div>
-
-                <div className="p-3 rounded-xl bg-white/5 text-[11px] text-slate-400 flex items-center gap-2">
-                  <ShieldAlert className="w-4 h-4 text-brand-emerald shrink-0" />
-                  <span>Your screenshot is saved to Google Drive and kept private to event organizers.</span>
-                </div>
+                {errors.feePaid && <p className="text-xs text-rose-400 mt-2">{errors.feePaid}</p>}
               </div>
 
-            </div>
+              {/* Question 2: Payment Method (Revealed only when Paid is selected) */}
+              {formData.feePaid === 'Paid' ? (
+                <div id="section-payment-method" className="pt-4 border-t border-white/10 animate-fadeIn">
+                  <label className="block text-xs font-bold text-slate-200 uppercase tracking-wider mb-3">
+                    Question 2: Payment Method <span className="text-rose-400">*</span>
+                  </label>
 
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Method: Cash */}
+                    <label
+                      className={`flex items-center gap-3.5 p-4 rounded-2xl border cursor-pointer transition-all ${
+                        formData.paymentMethod === 'Cash'
+                          ? 'bg-cyan-500/15 border-cyan-400/60 text-white'
+                          : 'bg-[#070a12]/70 border-white/10 text-slate-400 hover:border-white/20'
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value="Cash"
+                        checked={formData.paymentMethod === 'Cash'}
+                        onChange={handleChange}
+                        className="accent-cyan-400 w-4 h-4"
+                      />
+                      <div>
+                        <span className="text-sm font-bold text-white block">Cash</span>
+                        <span className="text-xs text-slate-400">Paid in cash to organizers/seniors</span>
+                      </div>
+                    </label>
+
+                    {/* Method: Online */}
+                    <label
+                      className={`flex items-center gap-3.5 p-4 rounded-2xl border cursor-pointer transition-all ${
+                        formData.paymentMethod === 'Online'
+                          ? 'bg-cyan-500/15 border-cyan-400/60 text-white'
+                          : 'bg-[#070a12]/70 border-white/10 text-slate-400 hover:border-white/20'
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value="Online"
+                        checked={formData.paymentMethod === 'Online'}
+                        onChange={handleChange}
+                        className="accent-cyan-400 w-4 h-4"
+                      />
+                      <div>
+                        <span className="text-sm font-bold text-white block">Online</span>
+                        <span className="text-xs text-slate-400">Paid via UPI / digital transfer</span>
+                      </div>
+                    </label>
+                  </div>
+                  {errors.paymentMethod && (
+                    <p className="text-xs text-rose-400 mt-2">{errors.paymentMethod}</p>
+                  )}
+                </div>
+              ) : formData.feePaid === 'Not Paid' ? (
+                <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-200">
+                  Note: You may still submit your registration. Please ensure your fee is settled with the 3rd-year organizing committee prior to morning check-in on 27 October 2026.
+                </div>
+              ) : null}
+            </div>
           </div>
 
           {/* ERROR SUMMARY BANNER ABOVE SUBMIT BUTTON */}
-          {Object.keys(errors).some(k => errors[k]) && (
-            <div id="form-error-banner" className="p-5 rounded-2xl bg-rose-500/15 border-2 border-rose-500/40 text-left max-w-xl mx-auto shadow-lg shadow-rose-950/30 animate-fadeIn">
+          {Object.keys(errors).some((k) => errors[k]) && (
+            <div
+              id="form-error-banner"
+              className="p-5 rounded-2xl bg-rose-500/15 border-2 border-rose-500/40 text-left max-w-xl mx-auto shadow-lg shadow-rose-950/30 animate-fadeIn"
+            >
               <div className="flex items-center gap-2 text-rose-400 font-bold text-sm mb-2">
                 <AlertCircle className="w-5 h-5 shrink-0" />
-                <span>Please complete the required details below before submitting:</span>
+                <span>Please address the following details before submitting:</span>
               </div>
               <ul className="space-y-1 text-xs text-rose-200 list-disc list-inside">
                 {errors.form && <li className="font-bold text-rose-300">{errors.form}</li>}
@@ -859,7 +995,9 @@ export default function Register() {
                 {errors.skills && <li>{errors.skills}</li>}
                 {errors.teamName && <li>{errors.teamName}</li>}
                 {errors.teamLeader && <li>{errors.teamLeader}</li>}
-                {errors.screenshot && <li>{errors.screenshot}</li>}
+                {errors.teamMembers && <li>{errors.teamMembers}</li>}
+                {errors.feePaid && <li>{errors.feePaid}</li>}
+                {errors.paymentMethod && <li>{errors.paymentMethod}</li>}
               </ul>
             </div>
           )}
@@ -869,15 +1007,16 @@ export default function Register() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`w-full sm:w-auto inline-flex items-center justify-center gap-3 px-12 py-5 rounded-2xl font-black text-sm uppercase tracking-wider transition-all shadow-xl ${isSubmitting
+              className={`w-full sm:w-auto inline-flex items-center justify-center gap-3 px-12 py-5 rounded-2xl font-black text-sm uppercase tracking-wider transition-all shadow-xl ${
+                isSubmitting
                   ? 'bg-slate-700 text-slate-400 cursor-not-allowed'
-                  : 'bg-gradient-to-r from-brand-cyan via-teal-300 to-brand-cyan text-dark-950 hover:shadow-glow-cyan hover:scale-[1.02] active:scale-[0.98]'
-                }`}
+                  : 'bg-gradient-to-r from-cyan-400 via-teal-300 to-amber-300 text-dark-950 hover:shadow-glow-cyan hover:scale-[1.02] active:scale-[0.98]'
+              }`}
             >
               {isSubmitting ? (
                 <>
-                  <div className="w-5 h-5 border-2 border-slate-400 border-t-transparent rounded-full animate-spin" />
-                  <span>Submitting to Google Sheets & Drive...</span>
+                  <div className="w-5 h-5 border-2 border-slate-900 border-t-transparent rounded-full animate-spin" />
+                  <span>Submitting Registration...</span>
                 </>
               ) : (
                 <>
@@ -887,25 +1026,12 @@ export default function Register() {
               )}
             </button>
 
-            {/* Helper for instant testing */}
-            <div className="flex items-center justify-center gap-2 pt-2">
-              <button
-                type="button"
-                onClick={fillDemoData}
-                className="text-xs font-semibold text-slate-400 hover:text-brand-cyan transition-colors underline underline-offset-4"
-              >
-                🧪 Click here to auto-fill sample test data
-              </button>
-            </div>
-
             <p className="text-xs text-slate-400">
-              By submitting, you confirm that you are an enrolled 1st or 2nd year student.
+              By submitting, you confirm that you are an enrolled student at Government Polytechnic Kanpur.
             </p>
           </div>
-
         </form>
       )}
-
     </div>
   );
 }

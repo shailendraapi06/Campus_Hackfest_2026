@@ -1,8 +1,10 @@
 /**
  * Google Sheets / Google Apps Script Integration Service
  * 
- * Submits registration data and payment screenshot payload to Google Apps Script Web App.
- * Includes CORS handling, error validation, duplicate prevention, and offline fallback.
+ * Submits registration data to Google Apps Script Web App.
+ * Handles both Team and Individual / Solo registrations.
+ * Records Fee Payment Status (Paid / Not Paid) and Payment Method (Cash / Online).
+ * Includes CORS handling, validation, duplicate prevention, and offline fallback.
  */
 
 import { HACKATHON_CONFIG } from "../config/hackathonConfig";
@@ -10,11 +12,16 @@ import { HACKATHON_CONFIG } from "../config/hackathonConfig";
 export async function submitRegistration(formData) {
   const endpoint = (HACKATHON_CONFIG.googleAppsScriptUrl || "").trim();
 
-  // Unique receipt reference prevents duplicate transaction ID collision
-  const uniqueTxnRef = formData.transactionId?.trim().toUpperCase() || 
-    ("RCPT-" + Date.now().toString().slice(-6) + "-" + Math.floor(100 + Math.random() * 900));
+  const isTeam = formData.participationType === 'team' || formData.teamStatus === 'yes';
 
-  // Prepare normalized payload for Google Apps Script & Google Drive
+  // Format a clean payment reference token for record-keeping
+  const feePaidStatus = formData.feePaid === 'Paid' ? 'Paid' : 'Not Paid';
+  const paymentMethod = formData.feePaid === 'Paid' ? (formData.paymentMethod || 'Unspecified') : 'N/A';
+  const txnRef = formData.feePaid === 'Paid' 
+    ? `PAID-${paymentMethod.toUpperCase()}-${Date.now().toString().slice(-6)}`
+    : `UNPAID-${Date.now().toString().slice(-6)}`;
+
+  // Prepare normalized payload for Google Apps Script
   const payload = {
     fullName: formData.fullName?.trim() || "",
     year: formData.year || "1st Year",
@@ -22,16 +29,18 @@ export async function submitRegistration(formData) {
     phone: formData.phone?.trim() || "",
     skills: formData.skills || [],
     otherSkill: formData.otherSkill?.trim() || "",
-    teamStatus: formData.teamStatus, // "yes" or "no"
-    teamName: formData.teamStatus === "yes" ? (formData.teamName?.trim() || "") : "",
-    teamLeader: formData.teamStatus === "yes" ? (formData.teamLeader?.trim() || "") : "",
-    teamMembers: formData.teamStatus === "yes" ? (formData.teamMembers?.filter(Boolean) || []) : [],
+    participationType: isTeam ? "Team" : "Individual / Solo",
+    teamStatus: isTeam ? "yes" : "no",
+    teamName: isTeam ? (formData.teamName?.trim() || "") : "Solo Participant",
+    teamLeader: isTeam ? (formData.teamLeader?.trim() || formData.fullName?.trim() || "") : formData.fullName?.trim() || "",
+    teamMembers: isTeam ? (formData.teamMembers?.filter(Boolean) || []) : [],
     problemStatement: formData.problemIdea?.trim() || "",
     projectIdea: formData.shortIdea?.trim() || "",
-    transactionId: uniqueTxnRef,
-    screenshotBase64: formData.screenshotBase64 || formData.screenshotPreview || "",
-    screenshotMimeType: formData.screenshotMimeType || "image/jpeg",
-    screenshotFileName: formData.screenshotFileName || "payment_screenshot.jpg",
+    feePaid: feePaidStatus,
+    paymentMethod: paymentMethod,
+    paymentStatus: feePaidStatus, // backward compatible
+    transactionId: txnRef,        // backward compatible
+    screenshotBase64: "",
     timestamp: new Date().toISOString()
   };
 
@@ -63,7 +72,9 @@ export async function submitRegistration(formData) {
           success: true,
           registrationId: registrationId,
           message: result.message || "Registration submitted successfully",
-          paymentStatus: result.paymentStatus || "Pending",
+          paymentStatus: feePaidStatus,
+          paymentMethod: paymentMethod,
+          participationType: payload.participationType,
           source: "google_apps_script"
         };
       } else {
@@ -104,33 +115,35 @@ async function handleLocalDemoSubmission(payload) {
   }
 
   // 2. Duplicate phone check
-  const cleanNewPhone = payload.phone.replace(/[\s\-\+]/g, "");
+  const cleanNewPhone = payload.phone.replace(/[\s\-+]/g, "");
   const duplicatePhone = existing.find(
-    (item) => item.phone && item.phone.replace(/[\s\-\+]/g, "") === cleanNewPhone
+    (item) => item.phone && item.phone.replace(/[\s\-+]/g, "") === cleanNewPhone
   );
   if (duplicatePhone) {
     throw new Error("A registration with this phone number already exists.");
   }
 
-  // 3. Generate sequential ID: CH2026-001, CH2026-002, etc.
+  // 3. Generate sequential ID: TF2026-001, TF2026-002, etc. (Techfest 2026)
   const nextNum = existing.length + 1;
-  const registrationId = `CH2026-${String(nextNum).padStart(3, "0")}`;
+  const registrationId = `TF2026-${String(nextNum).padStart(3, "0")}`;
 
-  // 5. Save to local storage
+  // 4. Save to local storage
   saveLocalRegistration(registrationId, payload);
 
   return {
     success: true,
     registrationId: registrationId,
     message: "Registration submitted successfully",
-    paymentStatus: "Pending",
+    paymentStatus: payload.feePaid,
+    paymentMethod: payload.paymentMethod,
+    participationType: payload.participationType,
     source: "local_demo"
   };
 }
 
 function getLocalRegistrations() {
   try {
-    return JSON.parse(localStorage.getItem("hackfest_local_registrations") || "[]");
+    return JSON.parse(localStorage.getItem("techfest_local_registrations") || "[]");
   } catch {
     return [];
   }
@@ -144,7 +157,7 @@ function saveLocalRegistration(registrationId, payload) {
       ...payload,
       createdAt: new Date().toISOString()
     });
-    localStorage.setItem("hackfest_local_registrations", JSON.stringify(list));
+    localStorage.setItem("techfest_local_registrations", JSON.stringify(list));
   } catch (e) {
     console.error("Could not persist to localStorage", e);
   }
